@@ -1,6 +1,6 @@
-import '../data.dart';
 import '../template/layer.dart';
 import '../template/tile.dart';
+import '../data.dart';
 
 class ConnectionLayer extends Layer {
   @override
