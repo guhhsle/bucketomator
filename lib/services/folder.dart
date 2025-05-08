@@ -9,7 +9,7 @@ class Folder extends StorageItem {
   List<Subobject> subobjects = [];
 
   @override
-  String get path => '/';
+  String get path => 'S3';
 
   @override
   Future<void> refresh() async {

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import '../services/subobject.dart';
 import 'subobject.dart';
@@ -26,16 +28,19 @@ class _TextObjectState extends State<TextObject> {
   }
 
   @override
-  void dispose() {
-    subobject.textData = textController.text;
-    subobject.update();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext c) {
     return SubobjectSheet(
       subobject: subobject,
+      trailing: [
+        IconButton(
+          icon: Icon(Icons.check_rounded),
+          onPressed: () async {
+            subobject.textData = textController.text;
+            await subobject.update();
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
       child: TextFormField(
         maxLines: null,
         controller: textController,

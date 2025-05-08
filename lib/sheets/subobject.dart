@@ -8,11 +8,13 @@ import '../template/tile.dart';
 class SubobjectSheet extends StatelessWidget {
   final Widget child;
   final Subobject subobject;
+  final List<Widget>? trailing;
 
   const SubobjectSheet({
     super.key,
     required this.child,
     required this.subobject,
+    this.trailing,
   });
 
   @override
@@ -53,6 +55,7 @@ class SubobjectSheet extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            ...trailing ?? [],
                           ],
                         ),
                         Expanded(

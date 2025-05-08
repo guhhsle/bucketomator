@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'layers/connection.dart';
+import 'layers/interface.dart';
 import 'template/prefs.dart';
 import 'template/theme.dart';
 import 'template/tile.dart';
@@ -58,8 +59,9 @@ enum Pref<T> {
 
 List<Tile> get settings {
   return [
+    Tile('Interface', Icons.toggle_on, '', InterfaceLayer().show),
+    Tile('Connection', Icons.domain_rounded, '', ConnectionLayer().show),
     Tile('Primary', Icons.colorize_rounded, '', ThemeLayer(true).show),
     Tile('Background', Icons.tonality_rounded, '', ThemeLayer(false).show),
-    Tile('Connection', Icons.domain_rounded, '', ConnectionLayer().show),
   ];
 }

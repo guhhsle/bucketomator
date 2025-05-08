@@ -30,10 +30,7 @@ class _ImageObjectState extends State<ImageObject> {
         builder: (context) {
           if (subobject.data == null) return Container();
           return InteractiveViewer(
-            boundaryMargin: EdgeInsets.all(20),
-            minScale: 0.5,
-            maxScale: 4.0,
-            child: Image.memory(subobject.data!, fit: BoxFit.contain),
+            child: Image.memory(subobject.data!, fit: BoxFit.cover),
           );
         },
       ),

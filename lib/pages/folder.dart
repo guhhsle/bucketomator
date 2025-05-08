@@ -30,8 +30,8 @@ class _FolderPageState extends State<FolderPage> {
         title: Text(folder.name),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh_rounded),
-            onPressed: () => widget.folder.refresh(),
+            icon: const Icon(Icons.add_rounded),
+            onPressed: () => () {},
           ),
           IconButton(
             tooltip: t('Settings'),
@@ -39,10 +39,14 @@ class _FolderPageState extends State<FolderPage> {
             onPressed: () => goToPage(const PageSettings()),
           ),
         ],
-        child: ListView.builder(
-          physics: scrollPhysics,
-          itemCount: folder.storageItems.length,
-          itemBuilder: (context, i) => folder.storageItems[i].toWidget,
+        child: RefreshIndicator(
+          onRefresh: () => widget.folder.refresh(),
+          child: ListView.builder(
+            physics: scrollPhysics,
+            itemCount: folder.storageItems.length,
+            padding: EdgeInsets.only(top: 16, bottom: 32),
+            itemBuilder: (context, i) => folder.storageItems[i].toWidget,
+          ),
         ),
       ),
     );
