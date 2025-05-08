@@ -17,9 +17,20 @@ dependencies:
   minio: any
 
 dev_dependencies:
+  flutter_launcher_icons: any
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
+  #     dart run flutter_launcher_icons
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/icon.png"
+  remove_alpha_ios: true
 
 flutter:
   uses-material-design: true
