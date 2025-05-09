@@ -3,7 +3,6 @@ import '../../template/functions.dart';
 import '../../template/settings.dart';
 import '../services/nodes/root.dart';
 import '../../widgets/frame.dart';
-import '../template/data.dart';
 import '../widgets/node_list.dart';
 
 class RootPage extends StatefulWidget {
