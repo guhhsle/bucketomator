@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import '../services/subobject.dart';
+import '../services/nodes/blob.dart';
 import '../template/functions.dart';
 import '../template/tile_card.dart';
 import '../template/data.dart';
 import '../template/tile.dart';
 
-class SubobjectSheet extends StatelessWidget {
+class BlobNodeSheet extends StatelessWidget {
   final Widget child;
-  final Subobject subobject;
+  final BlobNode blobNode;
   final List<Widget>? trailing;
 
-  const SubobjectSheet({
+  const BlobNodeSheet({
     super.key,
     required this.child,
-    required this.subobject,
+    required this.blobNode,
     this.trailing,
   });
 
@@ -27,7 +27,7 @@ class SubobjectSheet extends StatelessWidget {
         initialChildSize: 0.6,
         minChildSize: 0.2,
         builder: (c, controller) => ListenableBuilder(
-          listenable: subobject,
+          listenable: blobNode,
           builder: (c, snapshot) => Card(
             elevation: 6,
             margin: const EdgeInsets.all(8),
@@ -44,14 +44,13 @@ class SubobjectSheet extends StatelessWidget {
                             Expanded(
                               child: TileCard(
                                 Tile(
-                                  subobject.name,
-                                  Icons.edit_rounded,
+                                  blobNode.name,
+                                  Icons.drive_file_move,
                                   '',
-                                  () => getInput(subobject.name, 'Name').then((
-                                    s,
-                                  ) {
-                                    //TODO rename
-                                  }),
+                                  () => getInput(
+                                    blobNode.path,
+                                    'Path',
+                                  ).then((path) => blobNode.moveTo(path)),
                                 ),
                               ),
                             ),

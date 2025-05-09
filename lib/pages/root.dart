@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
 import '../../template/functions.dart';
 import '../../template/settings.dart';
+import '../services/nodes/root.dart';
 import '../../widgets/frame.dart';
-import '../services/folder.dart';
 import '../template/data.dart';
+import '../widgets/node_list.dart';
 
-class FolderPage extends StatefulWidget {
-  final Folder folder;
-  const FolderPage({super.key, required this.folder});
+class RootPage extends StatefulWidget {
+  const RootPage({super.key});
 
   @override
-  State<FolderPage> createState() => _FolderPageState();
+  State<RootPage> createState() => _RootPageState();
 }
 
-class _FolderPageState extends State<FolderPage> {
-  late Folder folder;
+class _RootPageState extends State<RootPage> {
   @override
   void initState() {
-    folder = widget.folder;
-    folder.refresh();
+    RootNode().refresh();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: folder,
+      listenable: RootNode(),
       builder: (context, child) => Frame(
-        title: Text(folder.name),
+        title: Text('S3'),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_rounded),
@@ -40,13 +38,8 @@ class _FolderPageState extends State<FolderPage> {
           ),
         ],
         child: RefreshIndicator(
-          onRefresh: () => widget.folder.refresh(),
-          child: ListView.builder(
-            physics: scrollPhysics,
-            itemCount: folder.storageItems.length,
-            padding: EdgeInsets.only(top: 16, bottom: 32),
-            itemBuilder: (context, i) => folder.storageItems[i].toWidget,
-          ),
+          onRefresh: () => RootNode().refresh(),
+          child: NodeList(nodes: RootNode().buckets, loaded: RootNode().loaded),
         ),
       ),
     );

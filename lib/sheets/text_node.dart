@@ -1,42 +1,41 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
-import '../services/subobject.dart';
-import 'subobject.dart';
+import 'blob_node.dart';
+import '../services/nodes/blob.dart';
 
-class TextObject extends StatefulWidget {
-  final Subobject subobject;
-  const TextObject({super.key, required this.subobject});
+class TextNodeSheet extends StatefulWidget {
+  final BlobNode blobNode;
+  const TextNodeSheet({super.key, required this.blobNode});
 
   @override
-  State<TextObject> createState() => _TextObjectState();
+  State<TextNodeSheet> createState() => _TextNodeSheetState();
 }
 
-class _TextObjectState extends State<TextObject> {
+class _TextNodeSheetState extends State<TextNodeSheet> {
   final focusNode = FocusNode();
   late TextEditingController textController;
-  late Subobject subobject;
+  late BlobNode blobNode;
 
   @override
   void initState() {
-    subobject = widget.subobject;
+    blobNode = widget.blobNode;
     textController = TextEditingController(text: 'Loading');
-    subobject.refresh().then((_) {
-      textController.text = subobject.textData;
+    blobNode.refresh().then((_) {
+      textController.text = blobNode.textData;
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext c) {
-    return SubobjectSheet(
-      subobject: subobject,
+    return BlobNodeSheet(
+      blobNode: blobNode,
       trailing: [
         IconButton(
           icon: Icon(Icons.check_rounded),
           onPressed: () async {
-            subobject.textData = textController.text;
-            await subobject.update();
+            blobNode.textData = textController.text;
+            await blobNode.update();
             Navigator.of(context).pop();
           },
         ),
