@@ -7,12 +7,14 @@ import '../../functions.dart';
 abstract class Node with ChangeNotifier {
   String path; //Path inside the bucket
   bool loaded = false;
+  GroupNode? parent;
   DateTime? date;
+  int? size;
+
   String get name => nameFromPath(path);
   String get fullPath => '${bucketNode.name}/$path';
-  GroupNode? parent;
 
-  Node({required this.path, this.parent, this.date});
+  Node({required this.path, this.parent, this.date, this.size});
 
   Future<void> refresh();
 

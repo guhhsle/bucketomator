@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../template/functions.dart';
 import '../services/nodes/group.dart';
+import '../template/prefs.dart';
 import '../widgets/node_list.dart';
+import '../layers/nodes/add.dart';
 import '../../widgets/frame.dart';
 import '../widgets/loading.dart';
 import '../layers/menu.dart';
@@ -26,14 +28,14 @@ class _GroupNodePageState extends State<GroupNodePage> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: groupNode,
+      listenable: Listenable.merge([groupNode, Preferences()]),
       builder: (context, child) => Frame(
         title: Text(groupNode.name),
         actions: [
           LoadingCircle(show: !groupNode.loaded),
           IconButton(
             icon: const Icon(Icons.add_rounded),
-            onPressed: () => () {},
+            onPressed: () => AddNodeLayer(parent: groupNode).show(),
           ),
           IconButton(
             tooltip: t('Settings'),
@@ -43,7 +45,10 @@ class _GroupNodePageState extends State<GroupNodePage> {
         ],
         child: RefreshIndicator(
           onRefresh: () => groupNode.refresh(),
-          child: NodeList(nodes: groupNode.nodes, loaded: groupNode.loaded),
+          child: NodeList(
+            nodes: groupNode.shownNodes,
+            loaded: groupNode.loaded,
+          ),
         ),
       ),
     );

@@ -31,7 +31,8 @@ enum Pref<T> {
   secretKey('Secret Key', '', Icons.password_rounded, secret: true),
   //QUICK MENU
   nodeSort('Sorting', 'Name Asc', Icons.sort_rounded, ui: true, all: nodeSorts),
-  prefixFirst('Folders First', true, Icons.folder_rounded, ui: true);
+  prefixFirst('Folders First', true, Icons.folder_rounded, ui: true),
+  showHidden('Show hidden', true, Icons.visibility, ui: true);
 
   final T initial;
   final List<T>? all;

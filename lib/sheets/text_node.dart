@@ -32,7 +32,7 @@ class _TextNodeSheetState extends State<TextNodeSheet> {
       blobNode: blobNode,
       trailing: [
         IconButton(
-          icon: Icon(Icons.check_rounded),
+          icon: Icon(Icons.save_rounded),
           onPressed: () async {
             blobNode.textData = textController.text;
             await blobNode.update();

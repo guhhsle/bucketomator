@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:minio/io.dart';
 import 'package:minio/models.dart';
 import 'package:minio/minio.dart';
+import 'package:s3/functions.dart';
+import 'package:s3/template/functions.dart';
 import 'dart:typed_data';
 import 'nodes/prefix.dart';
 import 'nodes/group.dart';
@@ -66,7 +69,7 @@ class EndPoint with ChangeNotifier {
     return minio.putObject(
       node.bucketNode.name,
       node.path,
-      Stream.value(node.data!),
+      Stream.value(node.data),
     );
   }
 
@@ -79,5 +82,29 @@ class EndPoint with ChangeNotifier {
   Future<void> removeBlobNodes(List<BlobNode> nodes) async {
     final paths = nodes.map((node) => node.path).toList();
     await minio.removeObjects(nodes.first.bucketNode.name, paths);
+  }
+
+  Future<void> uploadNode(BlobNode node) async {
+    await minio.putObject(
+      node.bucketNode.name,
+      node.path,
+      Stream.value(node.data),
+    );
+  }
+
+  Future<void> uploadPaths(GroupNode parent, List<String?> paths) async {
+    final length = paths.length;
+    for (int i = 0; i < length; i++) {
+      final filePath = paths[i];
+      if (filePath == null) continue;
+      final name = nameFromPath(filePath);
+      final bucketPath = parent.path + name;
+      try {
+        showSnack('${i + 1}/$length $name', true);
+        await minio.fPutObject(parent.bucketNode.name, bucketPath, filePath);
+      } catch (e) {
+        showSnack('Error when uploading $name $e', false);
+      }
+    }
   }
 }

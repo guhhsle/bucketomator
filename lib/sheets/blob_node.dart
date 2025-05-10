@@ -45,7 +45,7 @@ class BlobNodeSheet extends StatelessWidget {
                               child: TileCard(
                                 Tile(
                                   blobNode.name,
-                                  Icons.drive_file_move,
+                                  Icons.drive_file_move_rounded,
                                   '',
                                   () => getInput(
                                     blobNode.path,

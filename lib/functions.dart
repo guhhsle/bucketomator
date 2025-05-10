@@ -19,3 +19,19 @@ String renamePath(String path, String newName) {
   }
   return newName;
 }
+
+String formatBytes(int? bytes, {int decimals = 1}) {
+  if (bytes == null) return '?';
+  if (bytes <= 0) return '0 B';
+
+  const suffixes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  var i = 0;
+  double size = bytes.toDouble();
+
+  while (size >= 1024 && i < suffixes.length - 1) {
+    size /= 1024;
+    i++;
+  }
+
+  return '${size.toStringAsFixed(i > 0 ? decimals : 0)} ${suffixes[i]}';
+}

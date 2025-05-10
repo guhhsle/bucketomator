@@ -1,5 +1,5 @@
 name: s3
-description: "A new Flutter project."
+description: "Cross platform client for S3-compatible storage"
 publish_to: 'none' 
 
 version: 1.0.0+1
@@ -15,6 +15,8 @@ dependencies:
   flashy_flushbar: any
 
   minio: any
+  file_picker: any
+  file_saver: any
 
 dev_dependencies:
   flutter_launcher_icons: any

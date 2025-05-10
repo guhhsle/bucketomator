@@ -1,4 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
+import 'package:s3/functions.dart';
 import '../../services/nodes/blob.dart';
 import '../../template/functions.dart';
 import '../../template/layer.dart';
@@ -11,18 +13,22 @@ class BlobNodeLayer extends Layer {
 
   @override
   void construct() {
-    action = Tile(node.name, Icons.drive_file_move, '', () async {
-      final dest = await getInput(node.path, 'Destination');
-      node.moveTo(dest);
-    });
+    action = Tile(node.name, Icons.description_rounded);
 
     list = [
-      Tile('Remove', Icons.delete_forever_rounded, '', node.remove),
+      Tile('Move', Icons.drive_file_move, '', () async {
+        final dest = await getInput(node.path, 'Destination');
+        await node.moveTo(dest);
+        Navigator.of(context).pop();
+      }),
       Tile('Copy', Icons.content_copy_rounded, '', () async {
         final dest = await getInput(node.path, 'Destination');
-        node.copyTo(dest);
+        await node.copyTo(dest);
+        Navigator.of(context).pop();
       }),
       Tile('${node.date?.toLocal()}', Icons.event_rounded),
+      Tile('Size', Icons.memory_rounded, formatBytes(node.size)),
+      Tile('Remove', Icons.delete_forever_rounded, '', node.tryRemove),
     ];
   }
 }

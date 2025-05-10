@@ -14,13 +14,12 @@ import '../../functions.dart';
 import '../endpoint.dart';
 
 class BlobNode extends Node {
-  Uint8List? data;
-  int? size;
+  Uint8List data = Uint8List(0);
 
   BlobNode({
     required super.parent,
     required super.path,
-    required this.size,
+    super.size,
     super.date,
   });
 
@@ -52,6 +51,7 @@ class BlobNode extends Node {
   @override
   Future<void> refresh() async {
     loaded = false;
+    notifyListeners();
     data = await EndPoint().loadBlobNode(this);
     loaded = false;
     notifyListeners();
@@ -96,14 +96,29 @@ class BlobNode extends Node {
     parent!.refresh();
   }
 
-  Future<void> remove({bool alert = true}) async {
-    if (alert) showSnack('Removing $name', false);
-    await EndPoint().removeBlobNode(this);
-    parent!.refresh();
+  void tryRemove() {
+    showSnack(
+      'Press to confirm',
+      false,
+      onTap: () async {
+        await forceRemove();
+        showSnack('Removed $name', false);
+      },
+    );
   }
 
   Future<void> copyTo(String dest) async {
     await EndPoint().copyBlobNode(this, dest);
+    parent!.refresh();
+  }
+
+  Future<void> upload() async {
+    await EndPoint().uploadNode(this);
+    parent!.refresh();
+  }
+
+  Future<void> forceRemove() async {
+    await EndPoint().removeBlobNode(this);
     parent!.refresh();
   }
 }

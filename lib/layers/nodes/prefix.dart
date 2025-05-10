@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/nodes/prefix.dart';
+import '../../template/functions.dart';
 import '../../template/layer.dart';
 import '../../template/tile.dart';
 
@@ -10,9 +11,17 @@ class PrefixNodeLayer extends Layer {
 
   @override
   void construct() {
+    action = Tile(node.name, Icons.folder_rounded);
     list = [
-      Tile('Remove', Icons.delete_forever_rounded, '', node.remove),
-      Tile('${node.date?.toLocal()}', Icons.event_rounded),
+      Tile('Copy', Icons.folder_copy_rounded, '', () async {
+        final dest = await getInput(node.path, 'Destination');
+        await node.copyTo(dest);
+      }),
+      Tile('Move', Icons.drive_file_move_rounded, '', () async {
+        final dest = await getInput(node.path, 'Destination');
+        await node.moveTo(dest);
+      }),
+      Tile('Remove', Icons.delete_forever_rounded, '', node.tryRemove),
     ];
   }
 }
