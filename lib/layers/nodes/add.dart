@@ -32,6 +32,7 @@ class AddNodeLayer extends Layer {
       Tile('Folder', Icons.folder_rounded, '', () async {
         final folderPath = await FilePicker.platform.getDirectoryPath();
         if (folderPath == null) return;
+        //TODO test
         print(await listAllSubEntities(folderPath));
         //await parent.uploadFiles(result.paths);
       }),

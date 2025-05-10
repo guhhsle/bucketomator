@@ -25,7 +25,7 @@ class BlobNode extends Node {
 
   set textData(String s) => data = utf8.encode(s);
   String get extension => extensionFromPath(path);
-  String get textData => utf8.decode(data ?? []);
+  String get textData => utf8.decode(data);
 
   static BlobNode fromObject({
     required GroupNode parent,

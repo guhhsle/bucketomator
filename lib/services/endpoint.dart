@@ -1,35 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:minio/io.dart';
 import 'package:minio/models.dart';
 import 'package:minio/minio.dart';
-import 'package:s3/functions.dart';
-import 'package:s3/template/functions.dart';
+import 'package:minio/io.dart';
 import 'dart:typed_data';
 import 'nodes/prefix.dart';
 import 'nodes/group.dart';
 import 'nodes/blob.dart';
 import 'nodes/node.dart';
-import 'nodes/root.dart';
-import '../data.dart';
+import 'profile.dart';
+import '../../template/functions.dart';
+import '../../functions.dart';
 
 class EndPoint with ChangeNotifier {
   static final instance = EndPoint.internal();
-  final root = RootNode();
 
   factory EndPoint() => instance;
   EndPoint.internal();
 
-  Minio get minio {
-    return Minio(
-      endPoint: Pref.endPoint.value,
-      accessKey: Pref.accessKey.value,
-      secretKey: Pref.secretKey.value,
-    );
-  }
+  Minio get minio => Profiles().current.toMinio;
 
-  Future<List<Bucket>> listBuckets() {
-    return minio.listBuckets();
-  }
+  Future<List<Bucket>> listBuckets() => minio.listBuckets();
 
   Future<void> moveBlobNode(BlobNode node, String dest) async {
     await copyBlobNode(node, dest);

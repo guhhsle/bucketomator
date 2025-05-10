@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'layers/connection.dart';
 import 'layers/interface.dart';
 import 'template/prefs.dart';
 import 'template/theme.dart';
@@ -25,14 +24,13 @@ enum Pref<T> {
   backgroundDark(null, '000000', null, ui: true),
   primaryDark(null, 'F6F7EB', null, ui: true),
   debug('Developer', false, Icons.code_rounded),
-  //CONNECTION
-  endPoint('EndPoint', '', Icons.domain_rounded, secret: true),
-  accessKey('Access Key', '', Icons.key_rounded, secret: true),
-  secretKey('Secret Key', '', Icons.password_rounded, secret: true),
   //QUICK MENU
   nodeSort('Sorting', 'Name Asc', Icons.sort_rounded, ui: true, all: nodeSorts),
   prefixFirst('Folders First', true, Icons.folder_rounded, ui: true),
-  showHidden('Show hidden', true, Icons.visibility, ui: true);
+  showHidden('Show hidden', true, Icons.visibility, ui: true),
+  //PROFILES
+  profiles('Profiles', <String>[], null),
+  currentProfile('Current Profile', '', null);
 
   final T initial;
   final List<T>? all;
@@ -68,7 +66,6 @@ enum Pref<T> {
 List<Tile> get settings {
   return [
     Tile('Interface', Icons.toggle_on, '', InterfaceLayer().show),
-    Tile('Connection', Icons.domain_rounded, '', ConnectionLayer().show),
     Tile('Primary', Icons.colorize_rounded, '', ThemeLayer(true).show),
     Tile('Background', Icons.tonality_rounded, '', ThemeLayer(false).show),
   ];

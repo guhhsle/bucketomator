@@ -26,13 +26,8 @@ class _ImageNodeSheetState extends State<ImageNodeSheet> {
   Widget build(BuildContext c) {
     return BlobNodeSheet(
       blobNode: blobNode,
-      child: Builder(
-        builder: (context) {
-          if (blobNode.data == null) return Container();
-          return InteractiveViewer(
-            child: Image.memory(blobNode.data!, fit: BoxFit.cover),
-          );
-        },
+      child: InteractiveViewer(
+        child: Image.memory(blobNode.data, fit: BoxFit.cover),
       ),
     );
   }
