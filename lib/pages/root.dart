@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../template/functions.dart';
-import '../../template/settings.dart';
 import '../services/nodes/root.dart';
-import '../../widgets/frame.dart';
 import '../widgets/node_list.dart';
+import '../../widgets/frame.dart';
+import '../widgets/loading.dart';
+import '../layers/menu.dart';
 
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
@@ -21,11 +22,13 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
+    final root = RootNode();
     return ListenableBuilder(
-      listenable: RootNode(),
+      listenable: root,
       builder: (context, child) => Frame(
         title: Text('S3'),
         actions: [
+          LoadingCircle(show: !root.loaded),
           IconButton(
             icon: const Icon(Icons.add_rounded),
             onPressed: () => () {},
@@ -33,12 +36,12 @@ class _RootPageState extends State<RootPage> {
           IconButton(
             tooltip: t('Settings'),
             icon: const Icon(Icons.menu_rounded),
-            onPressed: () => goToPage(const PageSettings()),
+            onPressed: MenuLayer().show,
           ),
         ],
         child: RefreshIndicator(
-          onRefresh: () => RootNode().refresh(),
-          child: NodeList(nodes: RootNode().buckets, loaded: RootNode().loaded),
+          onRefresh: () => root.refresh(),
+          child: NodeList(nodes: root.buckets, loaded: root.loaded),
         ),
       ),
     );

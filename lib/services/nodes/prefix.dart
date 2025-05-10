@@ -8,8 +8,6 @@ import '../../pages/group_node.dart';
 import '../../template/tile.dart';
 
 class PrefixNode extends GroupNode {
-  DateTime? date;
-
   PrefixNode({required super.parent, required super.path});
 
   @override
@@ -20,10 +18,16 @@ class PrefixNode extends GroupNode {
   }
 
   Future<void> remove() async {
-    final subBlobNodes = <BlobNode>[];
-    await addSubBlobNodesTo(subBlobNodes);
-    await EndPoint().removeBlobNodes(subBlobNodes);
-    refreshToRoot();
+    showSnack(
+      'Press to confirm',
+      false,
+      onTap: () async {
+        final subBlobNodes = <BlobNode>[];
+        await addSubBlobNodesTo(subBlobNodes);
+        await EndPoint().removeBlobNodes(subBlobNodes);
+        refreshToRoot();
+      },
+    );
   }
 
   Future<List<BlobNode>> addSubBlobNodesTo(

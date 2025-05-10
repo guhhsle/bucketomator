@@ -10,6 +10,10 @@ const locales = [
   ...['Polish', 'Portuguese', 'Russian', 'Slovenian', 'Japanese'],
 ];
 const tops = ['Primary', 'Black', 'Transparent'];
+const nodeSorts = [
+  ...['Name Asc', 'Name Desc', 'Date Asc'],
+  ...['Date Desc', 'Size Asc', 'Size Desc'],
+];
 
 enum Pref<T> {
   //TEMPLATE
@@ -24,7 +28,10 @@ enum Pref<T> {
   //CONNECTION
   endPoint('EndPoint', '', Icons.domain_rounded, secret: true),
   accessKey('Access Key', '', Icons.key_rounded, secret: true),
-  secretKey('Secret Key', '', Icons.password_rounded, secret: true);
+  secretKey('Secret Key', '', Icons.password_rounded, secret: true),
+  //QUICK MENU
+  nodeSort('Sorting', 'Name Asc', Icons.sort_rounded, ui: true, all: nodeSorts),
+  prefixFirst('Folders First', true, Icons.folder_rounded, ui: true);
 
   final T initial;
   final List<T>? all;

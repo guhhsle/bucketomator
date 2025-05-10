@@ -10,11 +10,7 @@ class NodeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!loaded) {
-      return Center(
-        child: SingleChildScrollView(child: CircularProgressIndicator()),
-      );
-    } else if (nodes.isEmpty) {
+    if (loaded && nodes.isEmpty) {
       return Center(
         child: SingleChildScrollView(
           child: Icon(Icons.deselect_rounded, size: 64),

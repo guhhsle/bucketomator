@@ -55,11 +55,7 @@ class NextByLayer extends Layer {
   NextByLayer(this.pref, {this.suffix = ''});
   @override
   construct() {
-    action = Tile(
-      pref.title,
-      Icons.memory_rounded,
-      '${pref.value}$suffix',
-    );
+    action = Tile(pref.title, Icons.memory_rounded, '${pref.value}$suffix');
     list = pref.all!.map((e) {
       return Tile('$e$suffix', checked(e == pref.value), '', () {
         pref.set(e);

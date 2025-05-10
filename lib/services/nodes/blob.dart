@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:minio/models.dart';
+import 'package:s3/template/functions.dart';
 import 'dart:convert';
 import 'group.dart';
 import 'node.dart';
@@ -13,15 +14,14 @@ import '../../functions.dart';
 import '../endpoint.dart';
 
 class BlobNode extends Node {
-  DateTime? date;
-  int? size;
   Uint8List? data;
+  int? size;
 
   BlobNode({
     required super.parent,
     required super.path,
     required this.size,
-    this.date,
+    super.date,
   });
 
   set textData(String s) => data = utf8.encode(s);
@@ -96,7 +96,8 @@ class BlobNode extends Node {
     parent!.refresh();
   }
 
-  Future<void> remove() async {
+  Future<void> remove({bool alert = true}) async {
+    if (alert) showSnack('Removing $name', false);
     await EndPoint().removeBlobNode(this);
     parent!.refresh();
   }

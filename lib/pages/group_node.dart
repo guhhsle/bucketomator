@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../template/functions.dart';
-import '../../template/settings.dart';
 import '../services/nodes/group.dart';
 import '../widgets/node_list.dart';
 import '../../widgets/frame.dart';
+import '../widgets/loading.dart';
+import '../layers/menu.dart';
 
 class GroupNodePage extends StatefulWidget {
   final GroupNode groupNode;
@@ -29,6 +30,7 @@ class _GroupNodePageState extends State<GroupNodePage> {
       builder: (context, child) => Frame(
         title: Text(groupNode.name),
         actions: [
+          LoadingCircle(show: !groupNode.loaded),
           IconButton(
             icon: const Icon(Icons.add_rounded),
             onPressed: () => () {},
@@ -36,7 +38,7 @@ class _GroupNodePageState extends State<GroupNodePage> {
           IconButton(
             tooltip: t('Settings'),
             icon: const Icon(Icons.menu_rounded),
-            onPressed: () => goToPage(const PageSettings()),
+            onPressed: MenuLayer().show,
           ),
         ],
         child: RefreshIndicator(
