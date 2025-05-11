@@ -41,7 +41,7 @@ class BlobNode extends Node {
 
   @override
   Tile get toTile => Tile.complex(
-    name,
+    displayName,
     Icons.list_alt_rounded,
     '',
     openLayer,
@@ -119,6 +119,6 @@ class BlobNode extends Node {
 
   Future<void> forceRemove() async {
     await EndPoint().removeBlobNode(this);
-    parent!.refresh();
+    parent!.refreshToRoot();
   }
 }

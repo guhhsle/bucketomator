@@ -12,14 +12,21 @@ class PrefixNode extends GroupNode {
 
   @override
   Tile get toTile {
-    return Tile.complex(name, Icons.folder_rounded, '', () async {
-      goToPage(GroupNodePage(groupNode: this));
-    }, onHold: () => PrefixNodeLayer(node: this).show());
+    return Tile.complex(
+      displayName,
+      Icons.folder_rounded,
+      '',
+      () async {
+        goToPage(GroupNodePage(groupNode: this));
+      },
+      onHold: () => PrefixNodeLayer(node: this).show(),
+    );
   }
 
+  @override
   void tryRemove() {
     showSnack(
-      'Press to confirm',
+      'Press to remove $name',
       false,
       onTap: () async {
         await forceRemove();
@@ -28,6 +35,7 @@ class PrefixNode extends GroupNode {
     );
   }
 
+  @override
   Future<void> forceRemove() async {
     final subBlobNodes = <BlobNode>[];
     await addSubBlobNodesTo(subBlobNodes);

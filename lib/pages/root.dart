@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../template/functions.dart';
+import '../services/endpoint.dart';
 import '../services/nodes/root.dart';
 import '../widgets/node_list.dart';
 import '../../widgets/frame.dart';
@@ -26,12 +27,14 @@ class _RootPageState extends State<RootPage> {
     return ListenableBuilder(
       listenable: root,
       builder: (context, child) => Frame(
-        title: Text('S3'),
+        title: Text(EndPoint().profile.name),
         actions: [
           LoadingCircle(show: !root.loaded),
           IconButton(
             icon: const Icon(Icons.add_rounded),
-            onPressed: () => () {},
+            onPressed: () => getInput('', 'Bucket Name').then((name) {
+              EndPoint().createBucket(name);
+            }),
           ),
           IconButton(
             tooltip: t('Settings'),

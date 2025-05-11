@@ -44,7 +44,7 @@ class _TextNodeSheetState extends State<TextNodeSheet> {
         maxLines: null,
         controller: textController,
         focusNode: focusNode,
-        style: Theme.of(c).textTheme.bodyMedium!,
+        style: Theme.of(c).textTheme.bodySmall!,
         cursorColor: Theme.of(c).colorScheme.primary,
         decoration: InputDecoration(
           border: InputBorder.none,

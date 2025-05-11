@@ -3,10 +3,12 @@ import 'package:minio/models.dart';
 import 'package:minio/minio.dart';
 import 'package:minio/io.dart';
 import 'dart:typed_data';
+import 'nodes/bucket.dart';
 import 'nodes/prefix.dart';
 import 'nodes/group.dart';
 import 'nodes/blob.dart';
 import 'nodes/node.dart';
+import 'nodes/root.dart';
 import 'profile.dart';
 import '../../template/functions.dart';
 import '../../functions.dart';
@@ -16,8 +18,9 @@ class EndPoint with ChangeNotifier {
 
   factory EndPoint() => instance;
   EndPoint.internal();
+  Profile get profile => Profiles().current;
 
-  Minio get minio => Profiles().current.toMinio;
+  Minio get minio => profile.toMinio;
 
   Future<List<Bucket>> listBuckets() => minio.listBuckets();
 
@@ -96,5 +99,19 @@ class EndPoint with ChangeNotifier {
         showSnack('Error when uploading $name $e', false);
       }
     }
+  }
+
+  Future<void> createBucket(String name) async {
+    try {
+      await minio.makeBucket(name);
+    } catch (e) {
+      showSnack('$e', false);
+    }
+    await RootNode().refresh();
+  }
+
+  Future<void> removeBucket(BucketNode bucket) async {
+    await minio.removeBucket(bucket.name);
+    await RootNode().refresh();
   }
 }

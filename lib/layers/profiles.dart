@@ -9,6 +9,12 @@ class ProfilesLayer extends Layer {
   void construct() {
     action = Tile('Profiles', Icons.person_rounded);
     list = Profiles().allProfiles.map((p) => p.toTile);
+    trailing = [
+      IconButton(
+        icon: Icon(Icons.add_rounded),
+        onPressed: () => Profile.empty.add(),
+      ),
+    ];
   }
 }
 
@@ -24,15 +30,15 @@ class ProfileLayer extends Layer {
       profile.backup();
     });
     list = [
-      Tile(profile.endPoint, Icons.domain_rounded, '***', () async {
+      Tile('EndPoint', Icons.domain_rounded, '***', () async {
         profile.endPoint = await getInput(profile.endPoint, 'EndPoint');
         profile.backup();
       }),
-      Tile(profile.accessKey, Icons.key_rounded, '***', () async {
+      Tile('Access Key', Icons.key_rounded, '***', () async {
         profile.accessKey = await getInput(profile.accessKey, 'Access Key');
         profile.backup();
       }),
-      Tile(profile.secretKey, Icons.password_rounded, '***', () async {
+      Tile('Secret Key', Icons.password_rounded, '***', () async {
         profile.secretKey = await getInput(profile.secretKey, 'Secret Key');
         profile.backup();
       }),

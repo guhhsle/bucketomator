@@ -34,6 +34,9 @@ abstract class GroupNode extends Node {
     if (Pref.nodeSort.value.endsWith('Desc')) {
       shown = nodes.reversed.toList();
     }
+    if (!Pref.showHidden.value) {
+      shown.removeWhere((node) => node.name.startsWith('.'));
+    }
     final shownGroups = shown.whereType<GroupNode>().toList();
     final shownBlobs = shown.whereType<BlobNode>().toList();
 
@@ -72,4 +75,7 @@ abstract class GroupNode extends Node {
     await Future.wait(futures);
     return collected;
   }
+
+  void tryRemove();
+  Future<void> forceRemove();
 }

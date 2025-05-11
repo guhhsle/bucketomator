@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../data.dart';
 import 'bucket.dart';
 import 'group.dart';
 import '../../template/tile.dart';
@@ -12,13 +13,21 @@ abstract class Node with ChangeNotifier {
   int? size;
 
   String get name => nameFromPath(path);
+  String get displayName {
+    if (Pref.autoCapitalise.value) {
+      return capitalize(name);
+    } else {
+      return name;
+    }
+  }
+
   String get fullPath => '${bucketNode.name}/$path';
 
   Node({required this.path, this.parent, this.date, this.size});
 
   Future<void> refresh();
 
-  Tile get toTile => Tile();
+  Tile get toTile;
   Widget get toWidget => toTile.toWidget;
 
   BucketNode get bucketNode {

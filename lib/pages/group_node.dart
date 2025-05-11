@@ -30,7 +30,7 @@ class _GroupNodePageState extends State<GroupNodePage> {
     return ListenableBuilder(
       listenable: Listenable.merge([groupNode, Preferences()]),
       builder: (context, child) => Frame(
-        title: Text(groupNode.name),
+        title: Text(groupNode.displayName),
         actions: [
           LoadingCircle(show: !groupNode.loaded),
           IconButton(

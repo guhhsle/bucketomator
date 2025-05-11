@@ -6,5 +6,6 @@ class InterfaceLayer extends Layer {
   @override
   void construct() {
     action = Tile.fromPref(Pref.appbar);
+    list = [Tile.fromPref(Pref.autoCapitalise)];
   }
 }

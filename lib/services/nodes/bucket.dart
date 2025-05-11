@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:minio/models.dart';
 import 'group.dart';
+import '../../layers/nodes/bucket.dart';
 import '../../template/functions.dart';
 import '../../pages/group_node.dart';
 import '../../template/tile.dart';
+import '../endpoint.dart';
 
 class BucketNode extends GroupNode {
   final Bucket bucket;
@@ -14,8 +16,29 @@ class BucketNode extends GroupNode {
 
   @override
   Tile get toTile {
-    return Tile.complex(name, Icons.folder_copy_rounded, '', () async {
-      goToPage(GroupNodePage(groupNode: this));
-    }, onHold: () {});
+    return Tile.complex(
+      displayName,
+      Icons.folder_copy_rounded,
+      '',
+      () => goToPage(GroupNodePage(groupNode: this)),
+      onHold: () => BucketNodeLayer(node: this).show(),
+    );
+  }
+
+  @override
+  Future<void> forceRemove() async {
+    await EndPoint().removeBucket(this);
+  }
+
+  @override
+  void tryRemove() {
+    showSnack(
+      'Press to remove $name',
+      false,
+      onTap: () async {
+        await forceRemove();
+        showSnack('Removed $name', false);
+      },
+    );
   }
 }

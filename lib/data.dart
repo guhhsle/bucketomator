@@ -30,7 +30,9 @@ enum Pref<T> {
   showHidden('Show hidden', true, Icons.visibility, ui: true),
   //PROFILES
   profiles('Profiles', <String>[], null),
-  currentProfile('Current Profile', '', null);
+  currentProfile('Current Profile', '', null),
+  //INTERFACE
+  autoCapitalise('Auto Capitalise', false, Icons.text_fields_rounded, ui: true);
 
   final T initial;
   final List<T>? all;

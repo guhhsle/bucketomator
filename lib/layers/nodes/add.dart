@@ -17,23 +17,33 @@ class AddNodeLayer extends Layer {
   void construct() {
     action = Tile('Add new node', Icons.add_rounded);
     list = [
-      Tile('Blank', Icons.insert_drive_file_rounded, '', () async {
+      Tile('New file', Icons.insert_drive_file_rounded, '', () async {
         final dest = await getInput(parent.path, 'Name');
         final newNode = BlobNode(parent: parent, path: dest);
         await newNode.upload();
         Navigator.of(context).pop();
       }),
-      Tile('Files', Icons.description_rounded, '', () async {
+      Tile('New folder', Icons.create_new_folder_rounded, '', () async {
+        final dest = await getInput(parent.path, 'Name, end with /');
+        if (!dest.endsWith('/')) {
+          showSnack('Must end with /', false);
+        } else {
+          final newNode = BlobNode(parent: parent, path: '$dest.blank');
+          await newNode.upload();
+          Navigator.of(context).pop();
+        }
+      }),
+      Tile('Existing Files', Icons.description_rounded, '', () async {
         final result = await FilePicker.platform.pickFiles(allowMultiple: true);
         if (result == null) return;
         await parent.uploadFiles(result.paths);
         showSnack('Done', true);
       }),
-      Tile('Folder', Icons.folder_rounded, '', () async {
+      Tile('Existing Folder', Icons.folder_rounded, '', () async {
         final folderPath = await FilePicker.platform.getDirectoryPath();
+        showSnack('Not implemented', false); //TODO
         if (folderPath == null) return;
-        //TODO test
-        print(await listAllSubEntities(folderPath));
+        //print(await listAllSubEntities(folderPath));
         //await parent.uploadFiles(result.paths);
       }),
     ];

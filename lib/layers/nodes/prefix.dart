@@ -14,11 +14,11 @@ class PrefixNodeLayer extends Layer {
     action = Tile(node.name, Icons.folder_rounded);
     list = [
       Tile('Copy', Icons.folder_copy_rounded, '', () async {
-        final dest = await getInput(node.path, 'Destination');
+        final dest = await getInput(node.path, 'Destination, end with /');
         await node.copyTo(dest);
       }),
       Tile('Move', Icons.drive_file_move_rounded, '', () async {
-        final dest = await getInput(node.path, 'Destination');
+        final dest = await getInput(node.path, 'Destination, end with /');
         await node.moveTo(dest);
       }),
       Tile('Remove', Icons.delete_forever_rounded, '', node.tryRemove),

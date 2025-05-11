@@ -4,6 +4,7 @@ import 'dart:convert';
 import '../layers/profiles.dart';
 import '../template/tile.dart';
 import '../data.dart';
+import 'nodes/root.dart';
 
 class Profile {
   String name, endPoint;
@@ -21,9 +22,9 @@ class Profile {
   static Profile fromMap(Map map) {
     return Profile(
       name: map['name'] ?? '?',
-      endPoint: map['endPoint'],
-      accessKey: map['accessKey'],
-      secretKey: map['secretKey'],
+      endPoint: map['endPoint'] ?? '',
+      accessKey: map['accessKey'] ?? '',
+      secretKey: map['secretKey'] ?? '',
     );
   }
 
@@ -31,21 +32,25 @@ class Profile {
     return {
       'name': name,
       'endPoint': endPoint,
-      'acessKey': accessKey,
+      'accessKey': accessKey,
       'secretKey': secretKey,
     };
   }
 
-  static get emptyProfile {
-    return Profile(name: '', endPoint: '', accessKey: '', secretKey: '');
+  static Profile get empty {
+    return Profile(name: 'New', endPoint: '', accessKey: '', secretKey: '');
   }
 
   @override
   String toString() => jsonEncode(toMap);
 
-  Tile get toTile => Tile(name, Icons.person_rounded, '', () {
-    ProfileLayer(profile: this).show();
-  });
+  Tile get toTile => Tile.complex(
+    name,
+    Icons.person_rounded,
+    selected ? '*' : '',
+    select,
+    onHold: ProfileLayer(profile: this).show,
+  );
   Minio get toMinio {
     return Minio(
       endPoint: endPoint,
@@ -56,6 +61,12 @@ class Profile {
 
   void backup() => Profiles().backup();
   void remove() => Profiles().remove(this);
+  void add() => Profiles().add(this);
+  bool get selected => Pref.currentProfile.value == name;
+  void select() {
+    Pref.currentProfile.set(name);
+    backup();
+  }
 }
 
 class Profiles {
@@ -77,6 +88,7 @@ class Profiles {
       strings.add('$profile');
     }
     Pref.profiles.set(strings);
+    RootNode().refresh();
   }
 
   Profile get current {
@@ -85,11 +97,16 @@ class Profiles {
         return profile;
       }
     }
-    return Profile.emptyProfile;
+    return Profile.empty;
   }
 
   void remove(Profile profile) {
     allProfiles.remove(profile);
+    backup();
+  }
+
+  void add(Profile profile) {
+    allProfiles.add(profile);
     backup();
   }
 }

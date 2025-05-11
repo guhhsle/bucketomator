@@ -165,6 +165,7 @@ class ThemePref extends ChangeNotifier {
         titleMedium: TextStyle(fontWeight: FontWeight.w600, color: p),
         titleLarge: TextStyle(fontWeight: FontWeight.w600, color: p),
         titleSmall: TextStyle(fontWeight: FontWeight.w600, color: p),
+        bodySmall: TextStyle(fontWeight: FontWeight.w600, color: p),
         bodyMedium: TextStyle(fontWeight: FontWeight.w600, color: p),
         bodyLarge: TextStyle(fontWeight: FontWeight.w600, color: p),
         displayLarge: TextStyle(fontWeight: FontWeight.w600, color: p),

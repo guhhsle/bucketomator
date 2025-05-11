@@ -13,7 +13,10 @@ class MenuLayer extends Layer {
       goToPage(const PageSettings());
     });
     list = [
-      Tile('Profiles', Icons.person_rounded, '', ProfilesLayer().show),
+      Tile('Profiles', Icons.person_rounded, '', () {
+        Navigator.of(context).pop();
+        ProfilesLayer().show();
+      }),
       Tile.fromPref(Pref.nodeSort),
       Tile.fromPref(Pref.showHidden),
       Tile.fromPref(Pref.prefixFirst),
