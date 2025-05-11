@@ -53,7 +53,7 @@ class BlobNode extends Node {
     loaded = false;
     notifyListeners();
     data = await EndPoint().loadBlobNode(this);
-    loaded = false;
+    loaded = true;
     notifyListeners();
   }
 

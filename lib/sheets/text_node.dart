@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
+import '../widgets/loading.dart';
 import 'blob_node.dart';
 import '../services/nodes/blob.dart';
 
@@ -19,7 +20,7 @@ class _TextNodeSheetState extends State<TextNodeSheet> {
   @override
   void initState() {
     blobNode = widget.blobNode;
-    textController = TextEditingController(text: 'Loading');
+    textController = TextEditingController(text: blobNode.textData);
     blobNode.refresh().then((_) {
       textController.text = blobNode.textData;
     });
@@ -30,16 +31,7 @@ class _TextNodeSheetState extends State<TextNodeSheet> {
   Widget build(BuildContext c) {
     return BlobNodeSheet(
       blobNode: blobNode,
-      trailing: [
-        IconButton(
-          icon: Icon(Icons.save_rounded),
-          onPressed: () async {
-            blobNode.textData = textController.text;
-            await blobNode.update();
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
+      onSave: () => blobNode.textData = textController.text,
       child: TextFormField(
         maxLines: null,
         controller: textController,

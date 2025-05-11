@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import '../services/nodes/blob.dart';
-import '../template/functions.dart';
 import '../template/tile_card.dart';
 import '../template/data.dart';
 import '../template/tile.dart';
+import '../widgets/loading.dart';
 
 class BlobNodeSheet extends StatelessWidget {
-  final Widget child;
   final BlobNode blobNode;
-  final List<Widget>? trailing;
+  final Widget child;
+  final void Function()? onSave;
 
   const BlobNodeSheet({
     super.key,
-    required this.child,
     required this.blobNode,
-    this.trailing,
+    required this.child,
+    this.onSave,
   });
 
   @override
@@ -45,16 +45,19 @@ class BlobNodeSheet extends StatelessWidget {
                               child: TileCard(
                                 Tile(
                                   blobNode.name,
-                                  Icons.drive_file_move_rounded,
+                                  Icons.save_rounded,
                                   '',
-                                  () => getInput(
-                                    blobNode.path,
-                                    'Path',
-                                  ).then((path) => blobNode.moveTo(path)),
+                                  () async {
+                                    if (onSave == null) return;
+                                    onSave?.call();
+                                    await blobNode.update();
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.of(c).pop();
+                                  },
                                 ),
                               ),
                             ),
-                            ...trailing ?? [],
+                            LoadingCircle(show: !blobNode.loaded),
                           ],
                         ),
                         Expanded(
@@ -66,7 +69,7 @@ class BlobNodeSheet extends StatelessWidget {
                               left: 4,
                               right: 4,
                             ),
-                            child: child,
+                            child: blobNode.data.isEmpty ? null : child,
                           ),
                         ),
                       ],
