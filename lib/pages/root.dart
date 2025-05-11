@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../template/functions.dart';
+import '../layers/profiles.dart';
 import '../services/endpoint.dart';
 import '../services/nodes/root.dart';
 import '../widgets/node_list.dart';
@@ -35,6 +36,10 @@ class _RootPageState extends State<RootPage> {
             onPressed: () => getInput('', 'Bucket Name').then((name) {
               EndPoint().createBucket(name);
             }),
+          ),
+          IconButton(
+            icon: Icon(Icons.person_rounded),
+            onPressed: () => ProfilesLayer().show(),
           ),
           IconButton(
             tooltip: t('Settings'),
