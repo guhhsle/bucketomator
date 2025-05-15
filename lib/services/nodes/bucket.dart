@@ -4,6 +4,7 @@ import 'group.dart';
 import '../../layers/nodes/bucket.dart';
 import '../../template/functions.dart';
 import '../../pages/group_node.dart';
+import '../transfers/transfer.dart';
 import '../../template/tile.dart';
 import '../endpoint.dart';
 
@@ -26,19 +27,6 @@ class BucketNode extends GroupNode {
   }
 
   @override
-  Future<void> forceRemove() async {
-    await EndPoint().removeBucket(this);
-  }
-
-  @override
-  void tryRemove() {
-    showSnack(
-      'Press to remove $name',
-      false,
-      onTap: () async {
-        await forceRemove();
-        showSnack('Removed $name', false);
-      },
-    );
-  }
+  Transfer get forceRemove =>
+      Transfer('Removing $name', future: EndPoint().removeBucket(this));
 }

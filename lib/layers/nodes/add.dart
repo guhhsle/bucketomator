@@ -20,7 +20,7 @@ class AddNodeLayer extends Layer {
       Tile('New file', Icons.insert_drive_file_rounded, '', () async {
         final dest = await getInput(parent.path, 'Name');
         final newNode = BlobNode(parent: parent, path: dest);
-        await newNode.upload();
+        await newNode.upload.call();
         Navigator.of(context).pop();
       }),
       Tile('New folder', Icons.create_new_folder_rounded, '', () async {
@@ -29,14 +29,14 @@ class AddNodeLayer extends Layer {
           showSnack('Must end with /', false);
         } else {
           final newNode = BlobNode(parent: parent, path: '$dest.blank');
-          await newNode.upload();
+          await newNode.upload.call();
           Navigator.of(context).pop();
         }
       }),
       Tile('Existing Files', Icons.description_rounded, '', () async {
         final result = await FilePicker.platform.pickFiles(allowMultiple: true);
         if (result == null) return;
-        await parent.uploadFiles(result.paths);
+        await parent.uploadFiles(result.paths).call();
         showSnack('Done', true);
       }),
       Tile('Existing Folder', Icons.folder_rounded, '', () async {

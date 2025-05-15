@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:minio/models.dart';
-import 'package:s3/template/functions.dart';
 import 'dart:convert';
 import 'group.dart';
 import 'node.dart';
 import '../../layers/nodes/blob.dart';
 import '../../sheets/image_node.dart';
 import '../../sheets/text_node.dart';
+import '../transfers/transfer.dart';
 import '../../template/data.dart';
 import '../../template/tile.dart';
 import '../../functions.dart';
@@ -17,27 +17,25 @@ class BlobNode extends Node {
   Uint8List data = Uint8List(0);
 
   BlobNode({
-    required super.parent,
-    required super.path,
-    super.size,
     super.date,
+    super.size,
+    required super.path,
+    required super.parent,
   });
 
-  set textData(String s) => data = utf8.encode(s);
-  String get extension => extensionFromPath(path);
   String get textData => utf8.decode(data);
+  String get extension => extensionFromPath(path);
+  set textData(String s) => data = utf8.encode(s);
 
   static BlobNode fromObject({
     required GroupNode parent,
     required Object object,
-  }) {
-    return BlobNode(
-      parent: parent,
-      path: object.key!,
-      size: object.size,
-      date: object.lastModified,
-    );
-  }
+  }) => BlobNode(
+    date: object.lastModified,
+    size: object.size,
+    path: object.key!,
+    parent: parent,
+  );
 
   @override
   Tile get toTile => Tile.complex(
@@ -57,20 +55,13 @@ class BlobNode extends Node {
     notifyListeners();
   }
 
-  Future<void> update() async {
-    await EndPoint().updateBlobNode(this);
-    notifyListeners();
-  }
-
-  void openLayer() {
-    showModalBottomSheet(
-      barrierLabel: 'Barrier',
-      context: navigatorKey.currentContext!,
-      isScrollControlled: true,
-      barrierColor: Colors.black.withValues(alpha: 0.3),
-      builder: (c) => sheet,
-    );
-  }
+  void openLayer() => showModalBottomSheet(
+    barrierLabel: 'Barrier',
+    context: navigatorKey.currentContext!,
+    isScrollControlled: true,
+    barrierColor: Colors.black.withValues(alpha: 0.3),
+    builder: (c) => sheet,
+  );
 
   static const extensions = {
     'Image': ['jpg', 'png', 'gif'],
@@ -90,35 +81,30 @@ class BlobNode extends Node {
     }[filetype]!;
   }
 
-  Future<void> moveTo(String dest) async {
-    await EndPoint().moveBlobNode(this, dest);
-    path = dest;
-    parent!.refresh();
+  Transfer copyTo(String dest) => Transfer(
+    'Copying $name to $dest',
+    future: () async {
+      await EndPoint().copyBlobNode(this, dest);
+      await parent?.refresh();
+    }.call(),
+  );
+
+  Transfer moveTo(String dest) {
+    final transfer = Transfer('Moving $name to $dest');
+    transfer.future = () async {
+      await copyTo(dest).copyWith(parent: transfer).call();
+      await forceRemove.copyWith(parent: transfer).call();
+    }.call();
+    return transfer;
   }
 
-  void tryRemove() {
-    showSnack(
-      'Press to confirm',
-      false,
-      onTap: () async {
-        await forceRemove();
-        showSnack('Removed $name', false);
-      },
-    );
-  }
+  Transfer get upload =>
+      Transfer('Uploading $name', future: EndPoint().uploadNode(this));
 
-  Future<void> copyTo(String dest) async {
-    await EndPoint().copyBlobNode(this, dest);
-    parent!.refresh();
-  }
+  @override
+  Transfer get forceRemove =>
+      Transfer('Removing $name', future: EndPoint().removeBlobNode(this));
 
-  Future<void> upload() async {
-    await EndPoint().uploadNode(this);
-    parent!.refresh();
-  }
-
-  Future<void> forceRemove() async {
-    await EndPoint().removeBlobNode(this);
-    parent!.refreshToRoot();
-  }
+  Transfer get update =>
+      Transfer('Update $path', future: EndPoint().updateBlobNode(this));
 }

@@ -44,7 +44,7 @@ class _GroupNodePageState extends State<GroupNodePage> {
           ),
         ],
         child: RefreshIndicator(
-          onRefresh: () => groupNode.refresh(),
+          onRefresh: groupNode.refresh,
           child: NodeList(
             nodes: groupNode.shownNodes,
             loaded: groupNode.loaded,

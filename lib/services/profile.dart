@@ -19,27 +19,22 @@ class Profile {
 
   static Profile fromString(String s) => fromMap(jsonDecode(s));
 
-  static Profile fromMap(Map map) {
-    return Profile(
-      name: map['name'] ?? '?',
-      endPoint: map['endPoint'] ?? '',
-      accessKey: map['accessKey'] ?? '',
-      secretKey: map['secretKey'] ?? '',
-    );
-  }
+  static Profile fromMap(Map map) => Profile(
+    name: map['name'] ?? '?',
+    endPoint: map['endPoint'] ?? '',
+    accessKey: map['accessKey'] ?? '',
+    secretKey: map['secretKey'] ?? '',
+  );
 
-  Map get toMap {
-    return {
-      'name': name,
-      'endPoint': endPoint,
-      'accessKey': accessKey,
-      'secretKey': secretKey,
-    };
-  }
+  Map get toMap => {
+    'name': name,
+    'endPoint': endPoint,
+    'accessKey': accessKey,
+    'secretKey': secretKey,
+  };
 
-  static Profile get empty {
-    return Profile(name: 'New', endPoint: '', accessKey: '', secretKey: '');
-  }
+  static Profile get empty =>
+      Profile(name: 'New', endPoint: '', accessKey: '', secretKey: '');
 
   @override
   String toString() => jsonEncode(toMap);

@@ -24,11 +24,6 @@ class EndPoint with ChangeNotifier {
 
   Future<List<Bucket>> listBuckets() => minio.listBuckets();
 
-  Future<void> moveBlobNode(BlobNode node, String dest) async {
-    await copyBlobNode(node, dest);
-    await removeBlobNode(node);
-  }
-
   Future<List<Node>> listNodes(GroupNode node) async {
     final result = await minio
         .listObjects(node.bucketNode.name, prefix: node.path)
@@ -75,6 +70,9 @@ class EndPoint with ChangeNotifier {
   Future<void> removeBlobNodes(List<BlobNode> nodes) async {
     final paths = nodes.map((node) => node.path).toList();
     await minio.removeObjects(nodes.first.bucketNode.name, paths);
+    for (final node in nodes) {
+      node.parent?.refresh();
+    }
   }
 
   Future<void> uploadNode(BlobNode node) async {

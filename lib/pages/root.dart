@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../template/functions.dart';
-import '../layers/profiles.dart';
-import '../services/endpoint.dart';
 import '../services/nodes/root.dart';
+import '../services/endpoint.dart';
 import '../widgets/node_list.dart';
 import '../../widgets/frame.dart';
+import '../layers/profiles.dart';
 import '../widgets/loading.dart';
 import '../layers/menu.dart';
 
@@ -34,7 +34,7 @@ class _RootPageState extends State<RootPage> {
           IconButton(
             icon: const Icon(Icons.add_rounded),
             onPressed: () => getInput('', 'Bucket Name').then((name) {
-              EndPoint().createBucket(name);
+              root.createBucket(name).call();
             }),
           ),
           IconButton(
@@ -48,7 +48,7 @@ class _RootPageState extends State<RootPage> {
           ),
         ],
         child: RefreshIndicator(
-          onRefresh: () => root.refresh(),
+          onRefresh: root.refresh,
           child: NodeList(nodes: root.buckets, loaded: root.loaded),
         ),
       ),

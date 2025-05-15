@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import '../endpoint.dart';
 import 'blob.dart';
 import 'group.dart';
 import '../../layers/nodes/prefix.dart';
 import '../../template/functions.dart';
 import '../../pages/group_node.dart';
+import '../transfers/transfer.dart';
 import '../../template/tile.dart';
+import '../endpoint.dart';
 
 class PrefixNode extends GroupNode {
   PrefixNode({required super.parent, required super.path});
@@ -16,9 +17,7 @@ class PrefixNode extends GroupNode {
       displayName,
       Icons.folder_rounded,
       '',
-      () async {
-        goToPage(GroupNodePage(groupNode: this));
-      },
+      () => goToPage(GroupNodePage(groupNode: this)),
       onHold: () => PrefixNodeLayer(node: this).show(),
     );
   }
@@ -36,38 +35,52 @@ class PrefixNode extends GroupNode {
   }
 
   @override
-  Future<void> forceRemove() async {
-    final subBlobNodes = <BlobNode>[];
-    await addSubBlobNodesTo(subBlobNodes);
-    await EndPoint().removeBlobNodes(subBlobNodes);
-    refreshToRoot();
+  Transfer get forceRemove {
+    final collected = <BlobNode>[];
+    final transfer = Transfer('Removing $name');
+
+    transfer.future = () async {
+      await addSubBlobNodesTo(collected).copyWith(parent: transfer).call();
+      await removeNodes(collected).copyWith(parent: transfer).call();
+      await refreshToRoot.copyWith(parent: transfer).call();
+    }.call();
+    return transfer;
   }
 
-  Future<void> copyTo(String dest, {bool alert = true}) async {
+  Transfer copyTo(String dest) {
     if (!dest.endsWith('/')) {
       showSnack('Must end with /', false);
       throw Error();
     }
-    final subBlobNodes = <BlobNode>[];
-    await addSubBlobNodesTo(subBlobNodes);
-    final length = subBlobNodes.length;
-    for (int i = 0; i < length; i++) {
-      final blobNode = subBlobNodes[i];
-      showSnack('${i + 1}/$length ${blobNode.name}', true);
-      final newBlobDest = blobNode.path.replaceFirst(path, dest);
-      try {
-        await EndPoint().copyBlobNode(blobNode, newBlobDest);
-      } catch (e) {
-        showSnack('Error when copying ${blobNode.name} $e', false);
+    final transfer = Transfer('Copying $name to $dest');
+
+    transfer.future = () async {
+      final collected = <BlobNode>[];
+      await addSubBlobNodesTo(collected).copyWith(parent: transfer).call();
+
+      for (int i = 0; i < collected.length; i++) {
+        final blobNode = collected[i];
+        final newBlobDest = blobNode.path.replaceFirst(path, dest);
+        blobNode.copyTo(newBlobDest).copyWith(parent: transfer).call();
       }
-    }
-    if (alert) showSnack('Done', true);
-    parent!.refresh();
+
+      await refreshToRoot.copyWith(parent: transfer).call();
+    }.call();
+
+    return transfer;
   }
 
-  Future<void> moveTo(String dest) async {
-    await copyTo(dest, alert: false);
-    await forceRemove();
-    showSnack('Done', true);
+  Transfer moveTo(String dest) {
+    final transfer = Transfer('Moving $name to $dest');
+    transfer.future = () async {
+      await copyTo(dest).copyWith(parent: transfer).call();
+      await forceRemove.copyWith(parent: transfer).call();
+    }.call();
+    return transfer;
   }
+
+  Transfer removeNodes(List<BlobNode> collected) => Transfer(
+    'Removing nodes in $name',
+    future: EndPoint().removeBlobNodes(collected),
+  );
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'bucket.dart';
 import '../../template/functions.dart';
+import '../transfers/transfer.dart';
 import '../endpoint.dart';
 
 class RootNode extends ChangeNotifier {
@@ -25,4 +26,7 @@ class RootNode extends ChangeNotifier {
     loaded = true;
     notifyListeners();
   }
+
+  Transfer createBucket(String name) =>
+      Transfer('Creating bucket $name', future: EndPoint().createBucket(name));
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data.dart';
+import '../../template/functions.dart';
+import '../transfers/transfer.dart';
 import 'bucket.dart';
 import 'group.dart';
 import '../../template/tile.dart';
@@ -26,6 +28,10 @@ abstract class Node with ChangeNotifier {
   Node({required this.path, this.parent, this.date, this.size});
 
   Future<void> refresh();
+  Transfer get forceRemove;
+
+  void tryRemove() =>
+      showSnack('Press to confirm', false, onTap: forceRemove.call);
 
   Tile get toTile;
   Widget get toWidget => toTile.toWidget;
@@ -39,13 +45,13 @@ abstract class Node with ChangeNotifier {
     throw Error();
   }
 
-  Future<void> refreshToRoot() async {
+  Transfer get refreshToRoot {
     List<Future> futures = [];
     Node? node = this;
     while (node != null) {
       futures.add(node.refresh());
       node = node.parent;
     }
-    Future.wait(futures);
+    return Transfer('Refreshing $name', future: Future.wait(futures));
   }
 }

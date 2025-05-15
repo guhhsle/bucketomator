@@ -8,7 +8,6 @@ import '../../template/tile.dart';
 
 class BlobNodeLayer extends Layer {
   BlobNode node;
-
   BlobNodeLayer({required this.node});
 
   @override
@@ -18,17 +17,17 @@ class BlobNodeLayer extends Layer {
     list = [
       Tile('Move', Icons.drive_file_move, '', () async {
         final dest = await getInput(node.path, 'Destination');
-        await node.moveTo(dest);
+        await node.moveTo(dest).call();
         Navigator.of(context).pop();
       }),
       Tile('Copy', Icons.content_copy_rounded, '', () async {
         final dest = await getInput(node.path, 'Destination');
-        await node.copyTo(dest);
+        await node.copyTo(dest).call();
         Navigator.of(context).pop();
       }),
       Tile('${node.date?.toLocal()}', Icons.event_rounded),
       Tile('Size', Icons.memory_rounded, formatBytes(node.size)),
-      Tile('Remove', Icons.delete_forever_rounded, '', node.tryRemove),
+      Tile('Remove', Icons.delete_forever_rounded, '', node.tryRemove.call),
     ];
   }
 }

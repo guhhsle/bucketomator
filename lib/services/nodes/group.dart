@@ -1,6 +1,6 @@
 import '../../data.dart';
-import '../../template/functions.dart';
 import '../endpoint.dart';
+import '../transfers/transfer.dart';
 import 'blob.dart';
 import 'node.dart';
 
@@ -56,26 +56,24 @@ abstract class GroupNode extends Node {
     notifyListeners();
   }
 
-  Future<void> uploadFiles(List<String?> files) async {
-    await EndPoint().uploadPaths(this, files);
-    refresh();
-  }
+  Transfer uploadFiles(List<String?> files) => Transfer(
+    'Uploading ${files.length} files',
+    future: () async {
+      await EndPoint().uploadPaths(this, files);
+      await refresh();
+    }.call(),
+  );
 
-  Future<List<BlobNode>> addSubBlobNodesTo(
-    List<BlobNode> collected, {
-    bool alert = true,
-  }) async {
-    await refresh();
-    if (alert) showSnack('Removing $path', false);
-    collected.addAll(blobs);
-    List<Future> futures = [];
-    for (final group in groups) {
-      futures.add(group.addSubBlobNodesTo(collected));
-    }
-    await Future.wait(futures);
-    return collected;
-  }
-
-  void tryRemove();
-  Future<void> forceRemove();
+  Transfer addSubBlobNodesTo(List<BlobNode> collected) => Transfer(
+    'Collecting all subnodes in $name',
+    future: () async {
+      await refresh();
+      collected.addAll(blobs);
+      List<Future> futures = [];
+      for (final group in groups) {
+        futures.add(group.addSubBlobNodesTo(collected).call());
+      }
+      await Future.wait(futures);
+    }.call(),
+  );
 }
