@@ -123,6 +123,7 @@ class _GroupNodePageSheetState extends State<GroupNodePageSheet> {
           color: Theme.of(c).colorScheme.surface.withValues(alpha: 0.8),
           child: PageView(
             controller: pageController,
+            physics: scrollPhysics,
             children: group.blobs.map((blob) {
               return BlobNodeSheet(
                 scrollController: controller,
