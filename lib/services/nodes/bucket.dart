@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:minio/models.dart';
 import 'group.dart';
+import 'root.dart';
 import '../../layers/nodes/bucket.dart';
 import '../../template/functions.dart';
 import '../../pages/group_node.dart';
@@ -27,6 +28,11 @@ class BucketNode extends GroupNode {
   }
 
   @override
-  Transfer get forceRemove =>
-      Transfer('Removing $name', future: EndPoint().removeBucket(this));
+  Transfer get forceRemove => Transfer(
+    'Removing $name',
+    future: () async {
+      await EndPoint().removeBucket(this);
+      await RootNode().refresh();
+    }.call(),
+  );
 }

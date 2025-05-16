@@ -6,9 +6,7 @@ class ImageNodeSheet extends StatelessWidget {
   const ImageNodeSheet({super.key, required this.blobNode});
 
   @override
-  Widget build(BuildContext c) {
-    return InteractiveViewer(
-      child: Image.memory(blobNode.data, fit: BoxFit.cover),
-    );
+  Widget build(BuildContext context) {
+    return InteractiveViewer(child: Image.memory(blobNode.data));
   }
 }

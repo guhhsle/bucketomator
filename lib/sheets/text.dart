@@ -11,9 +11,9 @@ class TextNodeSheet extends StatefulWidget {
 }
 
 class _TextNodeSheetState extends State<TextNodeSheet> {
-  final focusNode = FocusNode();
   late TextEditingController textController;
   late BlobNode blobNode;
+  final focusNode = FocusNode();
 
   @override
   void initState() {

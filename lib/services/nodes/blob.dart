@@ -2,19 +2,20 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:minio/models.dart';
-import 'package:s3/data.dart';
-import 'package:s3/sheets/blob_node.dart';
 import 'dart:convert';
 import 'group.dart';
 import 'node.dart';
+import '../../template/functions.dart';
 import '../../layers/nodes/blob.dart';
-import '../../sheets/image_node.dart';
-import '../../sheets/text_node.dart';
+import '../../sheets/node/group.dart';
 import '../transfers/transfer.dart';
 import '../../template/data.dart';
 import '../../template/tile.dart';
+import '../../sheets/image.dart';
+import '../../sheets/text.dart';
 import '../../functions.dart';
 import '../endpoint.dart';
+import '../../data.dart';
 
 class BlobNode extends Node {
   Uint8List data = Uint8List(0);
@@ -26,7 +27,15 @@ class BlobNode extends Node {
     required super.parent,
   });
 
-  String get textData => utf8.decode(data);
+  String get textData {
+    try {
+      return utf8.decode(data);
+    } catch (e) {
+      showSnack('$e', false);
+      return 'ERROR';
+    }
+  }
+
   String get extension => extensionFromPath(path);
   set textData(String s) => data = utf8.encode(s);
 
@@ -43,11 +52,16 @@ class BlobNode extends Node {
   @override
   Tile get toTile => Tile.complex(
     displayName,
-    Icons.list_alt_rounded,
+    icon,
     '',
     openLayer,
     onHold: () => BlobNodeLayer(node: this).show(),
   );
+
+  IconData get icon => {
+    BlobType.text: Icons.list_alt_rounded,
+    BlobType.image: Icons.crop_original_rounded,
+  }[blobType]!;
 
   @override
   Future<void> refresh() async {
@@ -64,13 +78,12 @@ class BlobNode extends Node {
     isScrollControlled: true,
     barrierColor: Colors.black.withValues(alpha: 0.3),
     builder: (c) => GroupNodePageSheet(
-      initialIndex: parent!.blobs.indexOf(this),
+      initialIndex: parent!.shownBlobs.indexOf(this),
       group: parent!,
     ),
   );
 
   bool get hasData => data.isNotEmpty;
-
   BlobType get blobType => BlobType.fromExtension(extension);
 
   Widget get subSheet {
@@ -81,10 +94,7 @@ class BlobNode extends Node {
   }
 
   Future<void> saveChanges() async {
-    if (blobType == BlobType.image) {
-    } else if (blobType == BlobType.text) {
-      await update();
-    }
+    if (blobType == BlobType.text) await update();
   }
 
   Transfer copyTo(String dest) => Transfer(
@@ -104,8 +114,13 @@ class BlobNode extends Node {
     return transfer;
   }
 
-  Transfer get upload =>
-      Transfer('Uploading $name', future: EndPoint().uploadNode(this));
+  Transfer get upload => Transfer(
+    'Uploading $name',
+    future: () async {
+      await EndPoint().uploadNode(this);
+      await parent!.refresh();
+    }.call(),
+  );
 
   @override
   Transfer get forceRemove =>

@@ -57,13 +57,14 @@ class PrefixNode extends GroupNode {
     transfer.future = () async {
       final collected = <BlobNode>[];
       await addSubBlobNodesTo(collected).copyWith(parent: transfer).call();
+      final transfers = <Transfer>[];
 
       for (int i = 0; i < collected.length; i++) {
         final blobNode = collected[i];
         final newBlobDest = blobNode.path.replaceFirst(path, dest);
-        blobNode.copyTo(newBlobDest).copyWith(parent: transfer).call();
+        transfers.add(blobNode.copyTo(newBlobDest).copyWith(parent: transfer));
       }
-
+      await Future.wait(transfers.map((t) => t.call()));
       await refreshToRoot.copyWith(parent: transfer).call();
     }.call();
 

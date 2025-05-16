@@ -47,6 +47,8 @@ abstract class GroupNode extends Node {
     }
   }
 
+  List<BlobNode> get shownBlobs => shownNodes.whereType<BlobNode>().toList();
+
   @override
   Future<void> refresh() async {
     loaded = false;

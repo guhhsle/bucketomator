@@ -49,9 +49,8 @@ class EndPoint with ChangeNotifier {
     return Uint8List.fromList(bytesList);
   }
 
-  Future<MinioByteStream> streamBlobNode(BlobNode node) {
-    return minio.getObject(node.bucketNode.name, node.path);
-  }
+  Future<MinioByteStream> streamBlobNode(BlobNode node) =>
+      minio.getObject(node.bucketNode.name, node.path);
 
   Future<String> updateBlobNode(BlobNode node) {
     return minio.putObject(
@@ -61,9 +60,8 @@ class EndPoint with ChangeNotifier {
     );
   }
 
-  Future<void> copyBlobNode(BlobNode node, String dest) {
-    return minio.copyObject(node.bucketNode.name, dest, node.fullPath);
-  }
+  Future<void> copyBlobNode(BlobNode node, String dest) =>
+      minio.copyObject(node.bucketNode.name, dest, node.fullPath);
 
   Future<void> removeBlobNode(BlobNode node) => removeBlobNodes([node]);
 
@@ -71,17 +69,12 @@ class EndPoint with ChangeNotifier {
     final paths = nodes.map((node) => node.path).toList();
     await minio.removeObjects(nodes.first.bucketNode.name, paths);
     for (final node in nodes) {
-      node.parent?.refresh();
+      node.parent?.refreshToRoot();
     }
   }
 
-  Future<void> uploadNode(BlobNode node) async {
-    await minio.putObject(
-      node.bucketNode.name,
-      node.path,
-      Stream.value(node.data),
-    );
-  }
+  Future<void> uploadNode(BlobNode node) =>
+      minio.putObject(node.bucketNode.name, node.path, Stream.value(node.data));
 
   Future<void> uploadPaths(GroupNode parent, List<String?> paths) async {
     final length = paths.length;
@@ -108,8 +101,6 @@ class EndPoint with ChangeNotifier {
     await RootNode().refresh();
   }
 
-  Future<void> removeBucket(BucketNode bucket) async {
-    await minio.removeBucket(bucket.name);
-    await RootNode().refresh();
-  }
+  Future<void> removeBucket(BucketNode bucket) =>
+      minio.removeBucket(bucket.name);
 }
