@@ -30,7 +30,10 @@ class _RootPageState extends State<RootPage> {
       builder: (context, child) => Frame(
         title: Text(EndPoint().profile.name),
         actions: [
-          LoadingCircle(show: !root.loaded),
+          LoadingCircle(
+            show: !root.loaded,
+            color: Theme.of(context).appBarTheme.foregroundColor,
+          ),
           IconButton(
             icon: const Icon(Icons.add_rounded),
             onPressed: () => getInput('', 'Bucket Name').then((name) {

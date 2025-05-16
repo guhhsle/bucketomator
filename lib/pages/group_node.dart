@@ -32,7 +32,10 @@ class _GroupNodePageState extends State<GroupNodePage> {
       builder: (context, child) => Frame(
         title: Text(groupNode.displayName),
         actions: [
-          LoadingCircle(show: !groupNode.loaded),
+          LoadingCircle(
+            show: !groupNode.loaded,
+            color: Theme.of(context).appBarTheme.foregroundColor,
+          ),
           IconButton(
             icon: const Icon(Icons.add_rounded),
             onPressed: () => AddNodeLayer(parent: groupNode).show(),
