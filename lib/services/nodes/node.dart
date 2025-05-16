@@ -52,6 +52,6 @@ abstract class Node with ChangeNotifier {
       futures.add(node.refresh());
       node = node.parent;
     }
-    return Transfer('Refreshing $name', future: Future.wait(futures));
+    return Transfer('Refreshing', future: Future.wait(futures));
   }
 }

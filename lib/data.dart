@@ -72,3 +72,21 @@ List<Tile> get settings {
     Tile('Background', Icons.tonality_rounded, '', ThemeLayer(false).show),
   ];
 }
+
+enum BlobType {
+  image,
+  text;
+
+  static BlobType fromExtension(String ext) {
+    for (final entry in extensions.entries) {
+      if (entry.value.contains(ext)) return entry.key;
+    }
+    return BlobType.defaultType;
+  }
+
+  static BlobType get defaultType => BlobType.text;
+}
+
+const extensions = {
+  BlobType.image: ['jpg', 'png', 'gif'],
+};

@@ -7,6 +7,9 @@ class TransfersLayer extends Layer {
   TransferManager get manager => TransferManager();
 
   @override
+  bool get scroll => true;
+
+  @override
   void construct() {
     listenTo(manager);
     action = Tile('Transfers', Icons.swap_horiz_rounded);

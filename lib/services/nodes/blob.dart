@@ -1,6 +1,9 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:minio/models.dart';
+import 'package:s3/data.dart';
+import 'package:s3/sheets/blob_node.dart';
 import 'dart:convert';
 import 'group.dart';
 import 'node.dart';
@@ -60,25 +63,28 @@ class BlobNode extends Node {
     context: navigatorKey.currentContext!,
     isScrollControlled: true,
     barrierColor: Colors.black.withValues(alpha: 0.3),
-    builder: (c) => sheet,
+    builder: (c) => GroupNodePageSheet(
+      initialIndex: parent!.blobs.indexOf(this),
+      group: parent!,
+    ),
   );
 
-  static const extensions = {
-    'Image': ['jpg', 'png', 'gif'],
-  };
+  bool get hasData => data.isNotEmpty;
 
-  Widget get sheet {
-    String filetype = 'Text';
-    for (final entry in extensions.entries) {
-      if (entry.value.contains(extension)) {
-        filetype = entry.key;
-        break;
-      }
-    }
+  BlobType get blobType => BlobType.fromExtension(extension);
+
+  Widget get subSheet {
     return {
-      'Image': ImageNodeSheet(blobNode: this, key: Key('$hashCode')),
-      'Text': TextNodeSheet(blobNode: this, key: Key('$hashCode')),
-    }[filetype]!;
+      BlobType.image: ImageNodeSheet(blobNode: this, key: Key('$data')),
+      BlobType.text: TextNodeSheet(blobNode: this, key: Key('$data')),
+    }[blobType]!;
+  }
+
+  Future<void> saveChanges() async {
+    if (blobType == BlobType.image) {
+    } else if (blobType == BlobType.text) {
+      await update();
+    }
   }
 
   Transfer copyTo(String dest) => Transfer(
@@ -107,4 +113,12 @@ class BlobNode extends Node {
 
   Transfer get update =>
       Transfer('Update $path', future: EndPoint().updateBlobNode(this));
+
+  Transfer get download => Transfer(
+    'Downloading $name',
+    future: () async {
+      await refresh();
+      await FilePicker.platform.saveFile(fileName: name, bytes: data);
+    }.call(),
+  );
 }

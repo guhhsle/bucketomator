@@ -43,6 +43,8 @@ abstract class Layer extends ChangeNotifier {
     }
   }
 
+  bool get scroll => list.length > 6;
+
   void show() {
     showModalBottomSheet(
       barrierLabel: 'Barrier',

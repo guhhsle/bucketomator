@@ -1,18 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:s3/functions.dart';
-import '../../template/tile.dart';
 import 'manager.dart';
+import '../../template/tile.dart';
 
-enum Status {
-  pending,
-  inProgress,
-  completed,
-  failed,
-  waitingOnChildren;
-
-  @override
-  String toString() => capitalize(name);
-}
+enum Status { pending, inProgress, completed, failed, waitingOnChildren }
 
 class Transfer<T> extends ChangeNotifier {
   String? errorMessage;
@@ -21,7 +11,7 @@ class Transfer<T> extends ChangeNotifier {
   String title;
   Status futureStatus;
 
-  Status get status => futureStatus; //TODO
+  Status get status => futureStatus;
 
   Transfer(
     this.title, {
@@ -69,7 +59,7 @@ class Transfer<T> extends ChangeNotifier {
     errorMessage: errorMessage ?? this.errorMessage,
   );
 
-  Tile get toTile => Tile(title, icon, status);
+  Tile get toTile => Tile(title, icon);
 
   IconData get icon =>
       {
@@ -77,6 +67,7 @@ class Transfer<T> extends ChangeNotifier {
         Status.failed: Icons.error_rounded,
         Status.inProgress: Icons.timelapse_rounded,
         Status.completed: Icons.done_rounded,
+        Status.waitingOnChildren: Icons.list_rounded,
       }[status] ??
       Icons.moped_rounded;
 }
