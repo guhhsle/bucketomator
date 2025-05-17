@@ -3,6 +3,7 @@ import '../template/functions.dart';
 import '../services/profile.dart';
 import '../template/layer.dart';
 import '../template/tile.dart';
+import '../data.dart';
 
 class ProfilesLayer extends Layer {
   @override
@@ -26,7 +27,11 @@ class ProfileLayer extends Layer {
   @override
   void construct() {
     action = Tile(profile.name, Icons.edit_rounded, '', () async {
-      profile.name = await getInput(profile.name, 'Name');
+      final newName = await getInput(profile.name, 'Name');
+      if (Pref.currentProfile.value == profile.name) {
+        Pref.currentProfile.set(newName);
+      }
+      profile.name = newName;
       profile.backup();
     });
     list = [

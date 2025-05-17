@@ -4,7 +4,7 @@ import 'group.dart';
 import 'root.dart';
 import '../../layers/nodes/bucket.dart';
 import '../../template/functions.dart';
-import '../../pages/group_node.dart';
+import '../../pages/nodes/group.dart';
 import '../transfers/transfer.dart';
 import '../../template/tile.dart';
 import '../endpoint.dart';

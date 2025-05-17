@@ -6,8 +6,9 @@ import 'dart:convert';
 import 'group.dart';
 import 'node.dart';
 import '../../template/functions.dart';
+import '../../pages/nodes/blobs.dart';
 import '../../layers/nodes/blob.dart';
-import '../../sheets/node/group.dart';
+import '../../sheets/node/blobs.dart';
 import '../transfers/transfer.dart';
 import '../../template/data.dart';
 import '../../template/tile.dart';
@@ -50,13 +51,18 @@ class BlobNode extends Node {
   );
 
   @override
-  Tile get toTile => Tile.complex(
-    displayName,
-    icon,
-    '',
-    openLayer,
-    onHold: () => BlobNodeLayer(node: this).show(),
-  );
+  Tile get toTile => Tile.complex(displayName, icon, '', () {
+    if (Pref.sheetBlobs.value) {
+      openLayer();
+    } else {
+      goToPage(
+        BlobNodesPage(
+          group: parent!,
+          initialIndex: parent!.shownBlobs.indexOf(this),
+        ),
+      );
+    }
+  }, onHold: () => BlobNodeLayer(node: this).show());
 
   IconData get icon => {
     BlobType.text: Icons.list_alt_rounded,
@@ -77,7 +83,7 @@ class BlobNode extends Node {
     context: navigatorKey.currentContext!,
     isScrollControlled: true,
     barrierColor: Colors.black.withValues(alpha: 0.3),
-    builder: (c) => GroupNodePageSheet(
+    builder: (c) => BlobNodesSheet(
       initialIndex: parent!.shownBlobs.indexOf(this),
       group: parent!,
     ),
@@ -86,10 +92,11 @@ class BlobNode extends Node {
   bool get hasData => data.isNotEmpty;
   BlobType get blobType => BlobType.fromExtension(extension);
 
-  Widget get subSheet {
+  Widget get subWidget {
+    if (!hasData) return Container();
     return {
-      BlobType.image: ImageNodeSheet(blobNode: this, key: Key('$data')),
-      BlobType.text: TextNodeSheet(blobNode: this, key: Key('$data')),
+      BlobType.image: ImageNodeSheet(blobNode: this),
+      BlobType.text: TextNodeSheet(blobNode: this),
     }[blobType]!;
   }
 

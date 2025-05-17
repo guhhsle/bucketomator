@@ -32,7 +32,8 @@ enum Pref<T> {
   profiles('Profiles', <String>[], null),
   currentProfile('Current Profile', '', null),
   //INTERFACE
-  autoCapitalise('Auto Capitalise', false, Icons.text_fields_rounded, ui: true);
+  autoCapitalise('Auto Capitalise', false, Icons.text_fields_rounded, ui: true),
+  sheetBlobs('Sheet blobs', false, Icons.border_bottom_rounded);
 
   final T initial;
   final List<T>? all;

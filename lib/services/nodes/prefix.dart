@@ -3,7 +3,7 @@ import 'blob.dart';
 import 'group.dart';
 import '../../layers/nodes/prefix.dart';
 import '../../template/functions.dart';
-import '../../pages/group_node.dart';
+import '../../pages/nodes/group.dart';
 import '../transfers/transfer.dart';
 import '../../template/tile.dart';
 import '../endpoint.dart';

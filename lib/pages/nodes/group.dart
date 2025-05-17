@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../services/nodes/group.dart';
 import '../../template/functions.dart';
-import '../services/nodes/group.dart';
-import '../template/prefs.dart';
-import '../widgets/node_list.dart';
-import '../layers/nodes/add.dart';
+import '../../widgets/node_list.dart';
+import '../../layers/nodes/add.dart';
+import '../../widgets/loading.dart';
+import '../../template/prefs.dart';
 import '../../widgets/frame.dart';
-import '../widgets/loading.dart';
-import '../layers/menu.dart';
+import '../../layers/menu.dart';
 
 class GroupNodePage extends StatefulWidget {
   final GroupNode groupNode;

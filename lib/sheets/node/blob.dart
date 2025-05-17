@@ -65,7 +65,7 @@ class _BlobNodeSheetState extends State<BlobNodeSheet> {
                       controller: widget.scrollController,
                       physics: scrollPhysics,
                       padding: EdgeInsets.only(bottom: 64, left: 4, right: 4),
-                      child: blobNode.hasData ? blobNode.subSheet : Container(),
+                      child: blobNode.subWidget,
                     ),
                   ),
                 ],

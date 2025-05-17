@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:minio/minio.dart';
 import 'dart:convert';
+import 'nodes/root.dart';
 import '../layers/profiles.dart';
 import '../template/tile.dart';
 import '../data.dart';
-import 'nodes/root.dart';
 
 class Profile {
   String name, endPoint;
@@ -60,7 +60,7 @@ class Profile {
   bool get selected => Pref.currentProfile.value == name;
   void select() {
     Pref.currentProfile.set(name);
-    backup();
+    RootNode().refresh();
   }
 }
 
@@ -83,7 +83,6 @@ class Profiles {
       strings.add('$profile');
     }
     Pref.profiles.set(strings);
-    RootNode().refresh();
   }
 
   Profile get current {
