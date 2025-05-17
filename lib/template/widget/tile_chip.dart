@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'functions.dart';
-import 'prefs.dart';
-import 'tile.dart';
+import '../class/prefs.dart';
+import '../class/tile.dart';
+import '../functions.dart';
 
 class TileChip extends StatelessWidget {
   final bool selected, showCheckmark;

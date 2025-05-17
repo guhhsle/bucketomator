@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:minio/models.dart';
 import 'group.dart';
 import 'root.dart';
+import '../../template/class/tile.dart';
 import '../../layers/nodes/bucket.dart';
 import '../../template/functions.dart';
 import '../../pages/nodes/group.dart';
 import '../transfers/transfer.dart';
-import '../../template/tile.dart';
 import '../endpoint.dart';
 
 class BucketNode extends GroupNode {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import '../template/class/layer.dart';
+import '../template/class/tile.dart';
 import '../template/functions.dart';
 import '../services/profile.dart';
-import '../template/layer.dart';
-import '../template/tile.dart';
 import '../data.dart';
 
 class ProfilesLayer extends Layer {

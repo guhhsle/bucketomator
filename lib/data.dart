@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'template/class/prefs.dart';
+import 'template/class/tile.dart';
 import 'layers/interface.dart';
-import 'template/prefs.dart';
 import 'template/theme.dart';
-import 'template/tile.dart';
 
 const locales = [
   ...['Serbian', 'English', 'Spanish', 'German', 'French', 'Italian'],

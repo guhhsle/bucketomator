@@ -34,7 +34,7 @@ class _BlobNodesPageState extends State<BlobNodesPage> {
   Widget build(BuildContext context) {
     return PageView(
       controller: pageController,
-      physics: scrollPhysics,
+      physics: bouncePhysics,
       children: group.shownBlobs.map((blob) {
         return BlobNodePage(blobNode: blob);
       }).toList(),

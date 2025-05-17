@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../data.dart';
-import '../../template/functions.dart';
-import '../transfers/transfer.dart';
 import 'bucket.dart';
 import 'group.dart';
-import '../../template/tile.dart';
+import '../../template/class/tile.dart';
+import '../../template/functions.dart';
+import '../transfers/transfer.dart';
 import '../../functions.dart';
+import '../../data.dart';
 
 abstract class Node with ChangeNotifier {
   String path; //Path inside the bucket

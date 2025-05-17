@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'functions.dart';
-import 'tile.dart';
+import '../class/tile.dart';
+import '../functions.dart';
 
 class TileCard extends StatelessWidget {
   final Tile tile;
@@ -54,20 +54,19 @@ class TileCard extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(right: 16),
-                    child:
-                        tile.trailing == ''
-                            ? Icon(
-                              tile.icon,
-                              color: Theme.of(context).colorScheme.surface,
-                            )
-                            : Text(
-                              t(tile.trailing),
-                              overflow: TextOverflow.clip,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    child: tile.trailing == ''
+                        ? Icon(
+                            tile.icon,
+                            color: Theme.of(context).colorScheme.surface,
+                          )
+                        : Text(
+                            t(tile.trailing),
+                            overflow: TextOverflow.clip,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontWeight: FontWeight.bold,
                             ),
+                          ),
                   ),
                 ],
               ),

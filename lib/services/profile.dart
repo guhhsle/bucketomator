@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:minio/minio.dart';
 import 'dart:convert';
 import 'nodes/root.dart';
+import '../template/class/tile.dart';
 import '../layers/profiles.dart';
-import '../template/tile.dart';
 import '../data.dart';
 
 class Profile {
@@ -66,10 +66,10 @@ class Profile {
 
 class Profiles {
   static final instance = Profiles.internal();
-  List<Profile> allProfiles = [];
-
   factory Profiles() => instance;
   Profiles.internal();
+
+  List<Profile> allProfiles = [];
 
   void init() {
     for (final str in Pref.profiles.value) {

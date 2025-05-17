@@ -1,9 +1,9 @@
 import 'package:flashy_flushbar/flashy_flushbar_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'functions.dart';
-import 'theme.dart';
-import 'data.dart';
+import '../functions.dart';
+import '../../data.dart';
+import '../theme.dart';
 import '../data.dart';
 
 class App extends StatelessWidget {
@@ -62,7 +62,5 @@ class NoScrollBehavior extends ScrollBehavior {
     BuildContext context,
     Widget child,
     ScrollableDetails details,
-  ) {
-    return child; // No scrollbar
-  }
+  ) => child;
 }

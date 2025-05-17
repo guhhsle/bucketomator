@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Frame extends StatelessWidget {
   final bool automaticallyImplyLeading;
-  final Widget? floatingActionButton;
+  final Widget? floatingActionButton, leading;
   final List<Widget> actions;
   final Widget? child;
   final Widget title;
@@ -10,9 +10,10 @@ class Frame extends StatelessWidget {
   const Frame({
     super.key,
     this.automaticallyImplyLeading = true,
-    this.floatingActionButton,
     this.title = const SizedBox(),
+    this.floatingActionButton,
     this.actions = const [],
+    this.leading,
     this.child,
   });
 
@@ -22,12 +23,14 @@ class Frame extends StatelessWidget {
       appBar: AppBar(
         title: title,
         actions: [...actions, const SizedBox(width: 8)],
+        leading: leading,
         automaticallyImplyLeading: automaticallyImplyLeading,
       ),
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: SizedBox(
         height: double.infinity,
+        width: double.infinity,
         child: ClipRRect(
           borderRadius: const BorderRadius.only(
             topRight: Radius.circular(32),

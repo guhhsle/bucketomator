@@ -1,9 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import '../../services/nodes/prefix.dart';
+import '../../template/class/layer.dart';
+import '../../template/class/tile.dart';
 import '../../template/functions.dart';
-import '../../template/layer.dart';
-import '../../template/tile.dart';
 
 class PrefixNodeLayer extends Layer {
   PrefixNode node;

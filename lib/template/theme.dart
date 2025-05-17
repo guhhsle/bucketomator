@@ -1,10 +1,10 @@
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
-import 'functions.dart';
-import 'layer.dart';
 import 'dart:math';
+import 'class/layer.dart';
+import 'class/tile.dart';
+import 'functions.dart';
 import 'data.dart';
-import 'tile.dart';
 import '../data.dart';
 
 class ThemeLayer extends Layer {

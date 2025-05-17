@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'functions.dart';
 import 'prefs.dart';
-import '../data.dart';
+import '../functions.dart';
+import '../../data.dart';
 
 class Tile {
   void Function()? secondary;

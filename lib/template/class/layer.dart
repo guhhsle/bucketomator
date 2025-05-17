@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'visual_layer.dart';
 import 'prefs.dart';
-import 'data.dart';
 import 'tile.dart';
+import '../widget/visual_layer.dart';
+import '../data.dart';
 
 abstract class Layer extends ChangeNotifier {
   Iterable<Widget> leading = [], trailing = [];
@@ -45,13 +45,11 @@ abstract class Layer extends ChangeNotifier {
 
   bool get scroll => list.length > 6;
 
-  void show() {
-    showModalBottomSheet(
-      barrierLabel: 'Barrier',
-      context: navigatorKey.currentContext!,
-      isScrollControlled: true,
-      barrierColor: Colors.black.withValues(alpha: 0.3),
-      builder: (c) => visual,
-    );
-  }
+  void show() => showModalBottomSheet(
+    barrierLabel: 'Barrier',
+    context: navigatorKey.currentContext!,
+    isScrollControlled: true,
+    barrierColor: Colors.black.withValues(alpha: 0.3),
+    builder: (c) => visual,
+  );
 }

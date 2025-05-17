@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/transfers/manager.dart';
-import '../template/layer.dart';
-import '../template/tile.dart';
+import '../template/class/layer.dart';
+import '../template/class/tile.dart';
 
 class TransfersLayer extends Layer {
   TransferManager get manager => TransferManager();

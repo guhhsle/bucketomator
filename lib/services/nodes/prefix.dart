@@ -1,38 +1,34 @@
 import 'package:flutter/material.dart';
 import 'blob.dart';
 import 'group.dart';
+import '../../template/class/tile.dart';
 import '../../layers/nodes/prefix.dart';
 import '../../template/functions.dart';
 import '../../pages/nodes/group.dart';
 import '../transfers/transfer.dart';
-import '../../template/tile.dart';
 import '../endpoint.dart';
 
 class PrefixNode extends GroupNode {
   PrefixNode({required super.parent, required super.path});
 
   @override
-  Tile get toTile {
-    return Tile.complex(
-      displayName,
-      Icons.folder_rounded,
-      '',
-      () => goToPage(GroupNodePage(groupNode: this)),
-      onHold: () => PrefixNodeLayer(node: this).show(),
-    );
-  }
+  Tile get toTile => Tile.complex(
+    displayName,
+    Icons.folder_rounded,
+    '',
+    () => goToPage(GroupNodePage(groupNode: this)),
+    onHold: () => PrefixNodeLayer(node: this).show(),
+  );
 
   @override
-  void tryRemove() {
-    showSnack(
-      'Press to remove $name',
-      false,
-      onTap: () async {
-        await forceRemove();
-        showSnack('Removed $name', false);
-      },
-    );
-  }
+  void tryRemove() => showSnack(
+    'Press to remove $name',
+    false,
+    onTap: () async {
+      await forceRemove();
+      showSnack('Removed $name', false);
+    },
+  );
 
   @override
   Transfer get forceRemove {

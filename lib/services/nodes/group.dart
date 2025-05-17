@@ -1,8 +1,8 @@
-import '../../data.dart';
-import '../endpoint.dart';
-import '../transfers/transfer.dart';
 import 'blob.dart';
 import 'node.dart';
+import '../transfers/transfer.dart';
+import '../endpoint.dart';
+import '../../data.dart';
 
 abstract class GroupNode extends Node {
   List<Node> nodes = [];

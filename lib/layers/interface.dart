@@ -1,5 +1,5 @@
-import '../../template/layer.dart';
-import '../../template/tile.dart';
+import '../template/class/layer.dart';
+import '../template/class/tile.dart';
 import '../../data.dart';
 
 class InterfaceLayer extends Layer {

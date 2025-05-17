@@ -1,15 +1,14 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-import 'functions.dart';
 import 'layer.dart';
-import '../data.dart';
-import 'theme.dart';
 import 'tile.dart';
+import '../functions.dart';
+import '../../data.dart';
+import '../theme.dart';
 
 class Preferences extends ChangeNotifier {
   static final Preferences instance = Preferences.internal();
   static late SharedPreferences prefs;
-
   factory Preferences() => instance;
 
   Preferences.internal();

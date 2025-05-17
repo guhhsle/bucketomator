@@ -17,7 +17,7 @@ class NodeList extends StatelessWidget {
       );
     } else {
       return ListView.builder(
-        physics: scrollPhysics,
+        physics: bouncePhysics,
         itemCount: nodes.length,
         padding: EdgeInsets.only(top: 16, bottom: 32),
         itemBuilder: (context, i) => nodes[i].toWidget,

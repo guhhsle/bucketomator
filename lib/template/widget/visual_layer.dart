@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'tile_card.dart';
-import 'layer.dart';
+import '../class/layer.dart';
 
 class VisualLayer extends StatefulWidget {
   final Layer layer;

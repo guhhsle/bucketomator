@@ -1,13 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 import '../../services/nodes/group.dart';
+import '../../template/class/layer.dart';
 import '../../services/nodes/blob.dart';
+import '../../template/class/tile.dart';
 import '../../template/functions.dart';
-import '../../template/layer.dart';
-import '../../template/tile.dart';
 
 class AddNodeLayer extends Layer {
   GroupNode parent;

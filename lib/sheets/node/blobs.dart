@@ -47,7 +47,7 @@ class _BlobNodesSheetState extends State<BlobNodesSheet> {
               color: Theme.of(c).colorScheme.surface.withValues(alpha: 0.8),
               child: PageView(
                 controller: pageController,
-                physics: scrollPhysics,
+                physics: bouncePhysics,
                 children: group.shownBlobs.map((blob) {
                   return BlobNodeSheet(
                     scrollController: controller,

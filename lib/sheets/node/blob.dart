@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../template/widget/tile_card.dart';
 import '../../services/nodes/blob.dart';
-import '../../template/tile_card.dart';
-import '../../template/data.dart';
-import '../../template/tile.dart';
+import '../../template/class/tile.dart';
 import '../../widgets/loading.dart';
+import '../../template/data.dart';
 
 class BlobNodeSheet extends StatefulWidget {
   final BlobNode blobNode;
@@ -63,7 +63,7 @@ class _BlobNodeSheetState extends State<BlobNodeSheet> {
                   Expanded(
                     child: SingleChildScrollView(
                       controller: widget.scrollController,
-                      physics: scrollPhysics,
+                      physics: bouncePhysics,
                       padding: EdgeInsets.only(bottom: 64, left: 4, right: 4),
                       child: blobNode.subWidget,
                     ),

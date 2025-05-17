@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'manager.dart';
-import '../../template/tile.dart';
+import '../../template/class/tile.dart';
 
 enum Status { pending, inProgress, completed, failed, waitingOnChildren }
 

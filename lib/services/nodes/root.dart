@@ -5,12 +5,12 @@ import '../transfers/transfer.dart';
 import '../endpoint.dart';
 
 class RootNode extends ChangeNotifier {
-  List<BucketNode> buckets = [];
-  bool loaded = false;
-
   static final instance = RootNode.internal();
   factory RootNode() => instance;
   RootNode.internal();
+
+  List<BucketNode> buckets = [];
+  bool loaded = false;
 
   Future<void> refresh() async {
     try {

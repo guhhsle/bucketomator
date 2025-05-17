@@ -1,10 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
-import 'package:s3/functions.dart';
+import '../../template/class/layer.dart';
 import '../../services/nodes/blob.dart';
+import '../../template/class/tile.dart';
 import '../../template/functions.dart';
-import '../../template/layer.dart';
-import '../../template/tile.dart';
+import '../../functions.dart';
 
 class BlobNodeLayer extends Layer {
   BlobNode node;

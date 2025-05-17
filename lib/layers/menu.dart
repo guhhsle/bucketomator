@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'transfers.dart';
+import '../template/widget/settings.dart';
+import '../template/class/layer.dart';
+import '../template/class/tile.dart';
 import '../template/functions.dart';
-import '../template/settings.dart';
-import '../template/layer.dart';
-import '../template/tile.dart';
 import '../data.dart';
 
 class MenuLayer extends Layer {
