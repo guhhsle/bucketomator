@@ -29,6 +29,11 @@ class _BlobNodePageState extends State<BlobNodePage> {
     return ListenableBuilder(
       listenable: blobNode,
       builder: (context, child) => Frame(
+        leading: IconButton(
+          icon: Icon(Icons.menu_rounded),
+          tooltip: 'Menu',
+          onPressed: () => BlobNodeLayer(node: blobNode).show(),
+        ),
         title: Text(blobNode.name),
         actions: [
           LoadingCircle(
@@ -37,15 +42,12 @@ class _BlobNodePageState extends State<BlobNodePage> {
           ),
           IconButton(
             icon: Icon(Icons.save_rounded),
+            tooltip: 'Save and exit',
             onPressed: () async {
               await widget.blobNode.saveChanges();
               // ignore: use_build_context_synchronously
               Navigator.of(c).pop();
             },
-          ),
-          IconButton(
-            icon: Icon(Icons.menu_rounded),
-            onPressed: () => BlobNodeLayer(node: blobNode).show(),
           ),
         ],
         child: SingleChildScrollView(
