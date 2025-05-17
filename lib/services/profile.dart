@@ -34,7 +34,7 @@ class Profile {
   };
 
   static Profile get empty =>
-      Profile(name: 'New', endPoint: '', accessKey: '', secretKey: '');
+      Profile(name: 'Hold to edit', endPoint: '', accessKey: '', secretKey: '');
 
   @override
   String toString() => jsonEncode(toMap);

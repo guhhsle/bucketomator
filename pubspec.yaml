@@ -2,7 +2,7 @@ name: s3
 description: "Cross platform client for S3-compatible storage"
 publish_to: 'none' 
 
-version: 1.0.0+1
+version: 1.1.1+111
 
 environment:
   sdk: ^3.9.0-97.0.dev

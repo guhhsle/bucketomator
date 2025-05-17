@@ -24,6 +24,11 @@ class ProfileLayer extends Layer {
 
   ProfileLayer({required this.profile});
 
+  String protectText(String text) {
+    if (text.isEmpty) return '';
+    return '***';
+  }
+
   @override
   void construct() {
     action = Tile(profile.name, Icons.edit_rounded, '', () async {
@@ -34,16 +39,20 @@ class ProfileLayer extends Layer {
       profile.name = newName;
       profile.backup();
     });
+    final endPoint = protectText(profile.endPoint);
+    final accessKey = protectText(profile.accessKey);
+    final secretKey = protectText(profile.secretKey);
+
     list = [
-      Tile('EndPoint', Icons.domain_rounded, '***', () async {
+      Tile('EndPoint', Icons.domain_rounded, endPoint, () async {
         profile.endPoint = await getInput(profile.endPoint, 'EndPoint');
         profile.backup();
       }),
-      Tile('Access Key', Icons.key_rounded, '***', () async {
+      Tile('Access Key', Icons.key_rounded, accessKey, () async {
         profile.accessKey = await getInput(profile.accessKey, 'Access Key');
         profile.backup();
       }),
-      Tile('Secret Key', Icons.password_rounded, '***', () async {
+      Tile('Secret Key', Icons.password_rounded, secretKey, () async {
         profile.secretKey = await getInput(profile.secretKey, 'Secret Key');
         profile.backup();
       }),
