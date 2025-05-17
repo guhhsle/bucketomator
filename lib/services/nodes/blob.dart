@@ -20,6 +20,7 @@ import '../../data.dart';
 
 class BlobNode extends Node {
   Uint8List data = Uint8List(0);
+  final textController = TextEditingController();
 
   BlobNode({
     super.date,
@@ -74,6 +75,7 @@ class BlobNode extends Node {
     loaded = false;
     notifyListeners();
     data = await EndPoint().loadBlobNode(this);
+    textController.text = textData;
     loaded = true;
     notifyListeners();
   }
@@ -101,7 +103,10 @@ class BlobNode extends Node {
   }
 
   Future<void> saveChanges() async {
-    if (blobType == BlobType.text) await update();
+    if (blobType == BlobType.text) {
+      textData = textController.text;
+      await update();
+    }
   }
 
   Transfer copyTo(String dest) => Transfer(

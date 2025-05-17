@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import '../services/nodes/blob.dart';
 
@@ -11,25 +10,13 @@ class TextNodeSheet extends StatefulWidget {
 }
 
 class _TextNodeSheetState extends State<TextNodeSheet> {
-  late TextEditingController textController;
-  late BlobNode blobNode;
   final focusNode = FocusNode();
-
-  @override
-  void initState() {
-    blobNode = widget.blobNode;
-    textController = TextEditingController(text: blobNode.textData);
-    textController.text = blobNode.textData;
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext c) {
     return TextFormField(
       maxLines: null,
-      controller: textController,
+      controller: widget.blobNode.textController,
       focusNode: focusNode,
-      onChanged: (text) => blobNode.textData = text,
       style: Theme.of(c).textTheme.bodyMedium!,
       cursorColor: Theme.of(c).colorScheme.primary,
       decoration: InputDecoration(

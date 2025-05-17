@@ -31,7 +31,7 @@ abstract class Node with ChangeNotifier {
   Transfer get forceRemove;
 
   void tryRemove() =>
-      showSnack('Press to confirm', false, onTap: forceRemove.call);
+      showSnack('Press to confirm', false, onTap: () => forceRemove.call());
 
   Tile get toTile;
   Widget get toWidget => toTile.toWidget;
