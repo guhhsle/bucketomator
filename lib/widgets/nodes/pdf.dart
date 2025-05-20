@@ -9,9 +9,11 @@ class PDFNodeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (blobNode.data.isEmpty) return Container();
-    return SizedBox(
-      height: MediaQuery.of(context).size.height,
-      child: PdfViewer.data(blobNode.data, sourceName: blobNode.name),
+    return LayoutBuilder(
+      builder: (context, constraints) => SizedBox(
+        height: constraints.maxHeight,
+        child: PdfViewer.data(blobNode.data, sourceName: blobNode.name),
+      ),
     );
   }
 }

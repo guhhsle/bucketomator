@@ -36,10 +36,10 @@ class Cache extends StorageProvider {
   Future<void> refreshGroup(GroupNode group) async {
     try {
       final nodes = <Node>[];
+      final bucketName = group.bucketNode.name;
       final directory = dirFromGroup(group);
       for (final entity in directory.listSync()) {
-        var path = entity.path.replaceFirst('${nodePath(group)}/', '');
-        path = path.replaceFirst(nodePath(group), '');
+        var path = entity.path.replaceFirst('$cachePath/$bucketName/', '');
         if (entity is Directory) {
           nodes.add(PrefixNode(path: path, parent: group));
         }
@@ -133,7 +133,6 @@ class Cache extends StorageProvider {
     final file = File('$tempPath/${node.fullPath}');
     await file.create(recursive: true);
     await file.writeAsBytes(node.data);
-    print(formatBytes(file.statSync().size));
     return file;
   }
 }

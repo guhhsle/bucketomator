@@ -61,12 +61,18 @@ class _BlobNodeSheetState extends State<BlobNodeSheet> {
                     ],
                   ),
                   Expanded(
-                    child: SingleChildScrollView(
-                      controller: widget.scrollController,
-                      physics: bouncePhysics,
-                      padding: EdgeInsets.only(bottom: 64, left: 4, right: 4),
-                      child: blobNode.subWidget,
-                    ),
+                    child: blobNode.blobType.isFixedHeight
+                        ? SingleChildScrollView(
+                            physics: bouncePhysics,
+                            padding: EdgeInsets.only(
+                              bottom: 64,
+                              left: 8,
+                              right: 8,
+                              top: 16,
+                            ),
+                            child: blobNode.subWidget,
+                          )
+                        : blobNode.subWidget,
                   ),
                 ],
               ),

@@ -90,6 +90,11 @@ enum BlobType {
   }
 
   static BlobType get defaultType => BlobType.text;
+
+  bool get isFixedHeight {
+    if (this == BlobType.pdf) return false;
+    return true;
+  }
 }
 
 const extensions = {

@@ -50,11 +50,18 @@ class _BlobNodePageState extends State<BlobNodePage> {
             },
           ),
         ],
-        child: SingleChildScrollView(
-          physics: bouncePhysics,
-          padding: EdgeInsets.only(bottom: 64, left: 8, right: 8, top: 16),
-          child: blobNode.subWidget,
-        ),
+        child: blobNode.blobType.isFixedHeight
+            ? SingleChildScrollView(
+                physics: bouncePhysics,
+                padding: EdgeInsets.only(
+                  bottom: 64,
+                  left: 8,
+                  right: 8,
+                  top: 16,
+                ),
+                child: blobNode.subWidget,
+              )
+            : blobNode.subWidget,
       ),
     );
   }

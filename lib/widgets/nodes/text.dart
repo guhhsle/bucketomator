@@ -28,6 +28,9 @@ class _TextNodeWidgetState extends State<TextNodeWidget> {
         enabledBorder: InputBorder.none,
         disabledBorder: InputBorder.none,
         hintText: 'Text',
+        hintStyle: Theme.of(c).textTheme.bodyMedium!.copyWith(
+          color: Theme.of(c).colorScheme.primary.withAlpha(150),
+        ),
       ),
     );
   }

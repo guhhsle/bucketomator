@@ -1,6 +1,7 @@
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'data.dart';
+import 'services/storage/cache.dart';
 import 'template/class/prefs.dart';
 import 'template/widget/app.dart';
 import 'services/profile.dart';
@@ -13,5 +14,6 @@ Future<void> main() async {
     Pref.cachePath.set((await getApplicationCacheDirectory()).path);
   }
   Profiles().init();
+  Cache().printAll();
   runApp(const App(title: 'S3', child: RootPage()));
 }
