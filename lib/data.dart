@@ -33,7 +33,9 @@ enum Pref<T> {
   currentProfile('Current Profile', '', null),
   //INTERFACE
   autoCapitalise('Auto Capitalise', false, Icons.text_fields_rounded, ui: true),
-  sheetBlobs('Sheet blobs', false, Icons.border_bottom_rounded);
+  sheetBlobs('Sheet blobs', false, Icons.border_bottom_rounded),
+  //CACHE
+  cachePath(null, '', null);
 
   final T initial;
   final List<T>? all;
@@ -76,6 +78,8 @@ List<Tile> get settings {
 
 enum BlobType {
   image,
+  pdf,
+  video,
   text;
 
   static BlobType fromExtension(String ext) {
@@ -89,5 +93,7 @@ enum BlobType {
 }
 
 const extensions = {
-  BlobType.image: ['jpg', 'png', 'gif'],
+  BlobType.image: ['jpg', 'png', 'gif', 'webp'],
+  BlobType.video: ['mp4'],
+  BlobType.pdf: ['pdf'],
 };

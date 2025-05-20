@@ -1,13 +1,19 @@
 import 'blob.dart';
 import 'node.dart';
 import '../transfers/transfer.dart';
-import '../endpoint.dart';
+import '../storage/storage.dart';
 import '../../data.dart';
 
 abstract class GroupNode extends Node {
-  List<Node> nodes = [];
+  List<Node> _nodes = [];
 
   GroupNode({required super.path, super.parent});
+
+  List<Node> get nodes => _nodes;
+  set nodes(List<Node> list) {
+    _nodes = list;
+    notifyListeners();
+  }
 
   List<GroupNode> get groups => nodes.whereType<GroupNode>().toList();
   List<BlobNode> get blobs => nodes.whereType<BlobNode>().toList();
@@ -50,18 +56,12 @@ abstract class GroupNode extends Node {
   List<BlobNode> get shownBlobs => shownNodes.whereType<BlobNode>().toList();
 
   @override
-  Future<void> refresh() async {
-    loaded = false;
-    notifyListeners();
-    nodes = await EndPoint().listNodes(this);
-    loaded = true;
-    notifyListeners();
-  }
+  Future refresh() => Storage().refreshGroup(this);
 
   Transfer uploadFiles(List<String?> files) => Transfer(
     'Uploading ${files.length} files',
     future: () async {
-      await EndPoint().uploadPaths(this, files);
+      await Storage().uploadPaths(this, files);
       await refresh();
     }.call(),
   );

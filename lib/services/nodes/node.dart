@@ -9,7 +9,7 @@ import '../../data.dart';
 
 abstract class Node with ChangeNotifier {
   String path; //Path inside the bucket
-  bool loaded = false;
+  bool _loaded = false;
   GroupNode? parent;
   DateTime? date;
   int? size;
@@ -23,12 +23,19 @@ abstract class Node with ChangeNotifier {
     }
   }
 
+  bool get loaded => _loaded;
+  set loaded(bool b) {
+    _loaded = b;
+    notifyListeners();
+  }
+
   String get fullPath => '${bucketNode.name}/$path';
 
   Node({required this.path, this.parent, this.date, this.size});
 
   Future<void> refresh();
   Transfer get forceRemove;
+  void notify() => notifyListeners();
 
   void tryRemove() =>
       showSnack('Press to confirm', false, onTap: () => forceRemove.call());

@@ -6,7 +6,7 @@ import '../../layers/nodes/prefix.dart';
 import '../../template/functions.dart';
 import '../../pages/nodes/group.dart';
 import '../transfers/transfer.dart';
-import '../endpoint.dart';
+import '../storage/storage.dart';
 
 class PrefixNode extends GroupNode {
   PrefixNode({required super.parent, required super.path});
@@ -78,6 +78,6 @@ class PrefixNode extends GroupNode {
 
   Transfer removeNodes(List<BlobNode> collected) => Transfer(
     'Removing nodes in $name',
-    future: EndPoint().removeBlobNodes(collected),
+    future: Storage().removeBlobNodes(collected),
   );
 }

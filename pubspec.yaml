@@ -17,6 +17,9 @@ dependencies:
   minio: any
   file_picker: any
   file_saver: any
+  path_provider: any
+  pdfrx: any
+  video_player: any
 
 dev_dependencies:
   flutter_launcher_icons: any

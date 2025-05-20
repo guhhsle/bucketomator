@@ -1,70 +1,59 @@
-import 'package:flutter/material.dart';
-import 'package:minio/models.dart';
 import 'package:minio/minio.dart';
 import 'package:minio/io.dart';
 import 'dart:typed_data';
-import 'nodes/bucket.dart';
-import 'nodes/prefix.dart';
-import 'nodes/group.dart';
-import 'nodes/blob.dart';
-import 'nodes/node.dart';
-import 'nodes/root.dart';
-import 'profile.dart';
+import 'storage.dart';
 import '../../template/functions.dart';
 import '../../functions.dart';
+import '../nodes/bucket.dart';
+import '../nodes/prefix.dart';
+import '../nodes/group.dart';
+import '../nodes/root.dart';
+import '../nodes/blob.dart';
 
-class EndPoint with ChangeNotifier {
-  static final instance = EndPoint.internal();
-
-  factory EndPoint() => instance;
-  EndPoint.internal();
-  Profile get profile => Profiles().current;
-
+class Server extends StorageProvider {
   Minio get minio => profile.toMinio;
 
-  Future<List<Bucket>> listBuckets() => minio.listBuckets();
-
-  Future<List<Node>> listNodes(GroupNode node) async {
-    final result = await minio
-        .listObjects(node.bucketNode.name, prefix: node.path)
-        .first;
-
-    final groups = result.prefixes.map((path) {
-      return PrefixNode(path: path, parent: node);
-    }).toList();
-    final blobs = result.objects.map((object) {
-      return BlobNode.fromObject(parent: node, object: object);
-    }).toList();
-    groups.sort((a, b) => a.name.compareTo(b.name));
-    blobs.sort((a, b) => a.name.compareTo(b.name));
-    return [...groups, ...blobs];
+  @override
+  Future<void> refreshRoot(RootNode root) async {
+    final result = await minio.listBuckets();
+    root.loadBuckets(result);
   }
 
-  Future<Uint8List> loadBlobNode(BlobNode node) async {
+  @override
+  Future<void> refreshGroup(GroupNode group) async {
+    final result = await minio
+        .listObjects(group.bucketNode.name, prefix: group.path)
+        .first;
+    group.nodes = [
+      ...result.prefixes.map((p) => PrefixNode(path: p, parent: group)),
+      ...result.objects.map(
+        (o) => BlobNode.fromObject(parent: group, object: o),
+      ),
+    ];
+  }
+
+  @override
+  Future<void> loadBlobNode(BlobNode node) async {
     final stream = await streamBlobNode(node);
     final bytesList = <int>[];
     await for (final chunk in stream) {
       bytesList.addAll(chunk);
     }
-    return Uint8List.fromList(bytesList);
+    node.data = Uint8List.fromList(bytesList);
   }
 
   Future<MinioByteStream> streamBlobNode(BlobNode node) =>
       minio.getObject(node.bucketNode.name, node.path);
 
-  Future<String> updateBlobNode(BlobNode node) {
-    return minio.putObject(
-      node.bucketNode.name,
-      node.path,
-      Stream.value(node.data),
-    );
-  }
+  @override
+  Future<String> updateBlobNode(BlobNode node) =>
+      minio.putObject(node.bucketNode.name, node.path, Stream.value(node.data));
 
+  @override
   Future<void> copyBlobNode(BlobNode node, String dest) =>
       minio.copyObject(node.bucketNode.name, dest, node.fullPath);
 
-  Future<void> removeBlobNode(BlobNode node) => removeBlobNodes([node]);
-
+  @override
   Future<void> removeBlobNodes(List<BlobNode> nodes) async {
     final paths = nodes.map((node) => node.path).toList();
     await minio.removeObjects(nodes.first.bucketNode.name, paths);
@@ -73,9 +62,11 @@ class EndPoint with ChangeNotifier {
     }
   }
 
+  @override
   Future<void> uploadNode(BlobNode node) =>
       minio.putObject(node.bucketNode.name, node.path, Stream.value(node.data));
 
+  @override
   Future<void> uploadPaths(GroupNode parent, List<String?> paths) async {
     final length = paths.length;
     for (int i = 0; i < length; i++) {
@@ -92,15 +83,15 @@ class EndPoint with ChangeNotifier {
     }
   }
 
+  @override
   Future<void> createBucket(String name) async {
     try {
       await minio.makeBucket(name);
     } catch (e) {
       showSnack('$e', false);
     }
-    await RootNode().refresh();
   }
 
-  Future<void> removeBucket(BucketNode bucket) =>
-      minio.removeBucket(bucket.name);
+  @override
+  Future<void> removeBucket(BucketNode node) => minio.removeBucket(node.name);
 }

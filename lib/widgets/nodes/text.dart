@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import '../services/nodes/blob.dart';
+import '../../services/nodes/blob.dart';
 
-class TextNodeSheet extends StatefulWidget {
+class TextNodeWidget extends StatefulWidget {
   final BlobNode blobNode;
-  const TextNodeSheet({super.key, required this.blobNode});
+  const TextNodeWidget({super.key, required this.blobNode});
 
   @override
-  State<TextNodeSheet> createState() => _TextNodeSheetState();
+  State<TextNodeWidget> createState() => _TextNodeWidgetState();
 }
 
-class _TextNodeSheetState extends State<TextNodeSheet> {
+class _TextNodeWidgetState extends State<TextNodeWidget> {
   final focusNode = FocusNode();
+
   @override
   Widget build(BuildContext c) {
     return TextFormField(
@@ -19,12 +20,14 @@ class _TextNodeSheetState extends State<TextNodeSheet> {
       focusNode: focusNode,
       style: Theme.of(c).textTheme.bodyMedium!,
       cursorColor: Theme.of(c).colorScheme.primary,
+      showCursor: true,
       decoration: InputDecoration(
         border: InputBorder.none,
         focusedBorder: InputBorder.none,
         errorBorder: InputBorder.none,
         enabledBorder: InputBorder.none,
         disabledBorder: InputBorder.none,
+        hintText: 'Text',
       ),
     );
   }

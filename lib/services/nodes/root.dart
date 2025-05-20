@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:minio/models.dart';
 import 'bucket.dart';
-import '../../template/functions.dart';
 import '../transfers/transfer.dart';
-import '../endpoint.dart';
+import '../storage/storage.dart';
 
 class RootNode extends ChangeNotifier {
   static final instance = RootNode.internal();
@@ -10,23 +10,31 @@ class RootNode extends ChangeNotifier {
   RootNode.internal();
 
   List<BucketNode> buckets = [];
-  bool loaded = false;
+  bool _loaded = false;
 
-  Future<void> refresh() async {
-    try {
-      loaded = false;
-      final result = await EndPoint().listBuckets();
-      buckets = result.map((bucket) {
-        return BucketNode(bucket: bucket);
-      }).toList();
-      buckets.sort((a, b) => a.name.compareTo(b.name));
-    } catch (e) {
-      showSnack('$e', false);
-    }
-    loaded = true;
+  bool get loaded => _loaded;
+  set loaded(bool b) {
+    _loaded = b;
     notifyListeners();
   }
 
-  Transfer createBucket(String name) =>
-      Transfer('Creating bucket $name', future: EndPoint().createBucket(name));
+  void loadBuckets(List<Bucket> list) {
+    buckets = list.map((bucket) {
+      return BucketNode(bucket: bucket);
+    }).toList();
+    buckets.sort((a, b) => a.name.compareTo(b.name));
+    notifyListeners();
+  }
+
+  void notify() => notifyListeners();
+
+  Future<void> refresh() => Storage().refreshRoot(this);
+
+  Transfer createBucket(String name) => Transfer(
+    'Creating bucket $name',
+    future: () async {
+      await Storage().createBucket(name);
+      refresh();
+    }.call(),
+  );
 }

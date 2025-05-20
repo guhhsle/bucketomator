@@ -6,20 +6,22 @@ import 'dart:convert';
 import 'group.dart';
 import 'node.dart';
 import '../../template/class/tile.dart';
+import '../../widgets/nodes/image.dart';
+import '../../widgets/nodes/video.dart';
+import '../../widgets/nodes/text.dart';
 import '../../template/functions.dart';
+import '../../widgets/nodes/pdf.dart';
 import '../../pages/nodes/blobs.dart';
 import '../../layers/nodes/blob.dart';
 import '../../sheets/node/blobs.dart';
 import '../transfers/transfer.dart';
 import '../../template/data.dart';
-import '../../sheets/image.dart';
-import '../../sheets/text.dart';
+import '../storage/storage.dart';
 import '../../functions.dart';
-import '../endpoint.dart';
 import '../../data.dart';
 
 class BlobNode extends Node {
-  Uint8List data = Uint8List(0);
+  Uint8List _data = Uint8List(0);
   final textController = TextEditingController();
 
   BlobNode({
@@ -30,12 +32,19 @@ class BlobNode extends Node {
   });
 
   String get textData {
+    if (blobType == BlobType.image) return 'IMAGE';
     try {
       return utf8.decode(data);
     } catch (e) {
-      showSnack('$e', false);
       return 'ERROR';
     }
+  }
+
+  Uint8List get data => _data;
+  set data(Uint8List u) {
+    _data = u;
+    textController.text = textData;
+    notify();
   }
 
   String get extension => extensionFromPath(path);
@@ -65,20 +74,16 @@ class BlobNode extends Node {
     }
   }, onHold: () => BlobNodeLayer(node: this).show());
 
-  IconData get icon => {
-    BlobType.text: Icons.list_alt_rounded,
-    BlobType.image: Icons.crop_original_rounded,
-  }[blobType]!;
+  IconData get icon =>
+      {
+        BlobType.pdf: Icons.picture_as_pdf_rounded,
+        BlobType.image: Icons.crop_original_rounded,
+        BlobType.video: Icons.movie_rounded,
+      }[blobType] ??
+      Icons.list_alt_rounded;
 
   @override
-  Future<void> refresh() async {
-    loaded = false;
-    notifyListeners();
-    data = await EndPoint().loadBlobNode(this);
-    textController.text = textData;
-    loaded = true;
-    notifyListeners();
-  }
+  Future<void> refresh() => Storage().loadBlobNode(this);
 
   void openLayer() => showModalBottomSheet(
     barrierLabel: 'Barrier',
@@ -91,16 +96,16 @@ class BlobNode extends Node {
     ),
   );
 
-  bool get hasData => data.isNotEmpty;
+  bool get hasData => loaded || data.isNotEmpty;
   BlobType get blobType => BlobType.fromExtension(extension);
 
-  Widget get subWidget {
-    if (!hasData) return Container();
-    return {
-      BlobType.image: ImageNodeSheet(blobNode: this),
-      BlobType.text: TextNodeSheet(blobNode: this),
-    }[blobType]!;
-  }
+  Widget get subWidget =>
+      {
+        BlobType.image: ImageNodeWidget(blobNode: this),
+        BlobType.video: VideoNodeWidget(blobNode: this),
+        BlobType.pdf: PDFNodeWidget(blobNode: this),
+      }[blobType] ??
+      TextNodeWidget(blobNode: this);
 
   Future<void> saveChanges() async {
     if (blobType == BlobType.text) {
@@ -112,7 +117,7 @@ class BlobNode extends Node {
   Transfer copyTo(String dest) => Transfer(
     'Copying $name to $dest',
     future: () async {
-      await EndPoint().copyBlobNode(this, dest);
+      await Storage().copyBlobNode(this, dest);
       await parent?.refresh();
     }.call(),
   );
@@ -129,17 +134,17 @@ class BlobNode extends Node {
   Transfer get upload => Transfer(
     'Uploading $name',
     future: () async {
-      await EndPoint().uploadNode(this);
+      await Storage().uploadNode(this);
       await parent!.refresh();
     }.call(),
   );
 
   @override
   Transfer get forceRemove =>
-      Transfer('Removing $name', future: EndPoint().removeBlobNode(this));
+      Transfer('Removing $name', future: Storage().removeBlobNode(this));
 
   Transfer get update =>
-      Transfer('Update $path', future: EndPoint().updateBlobNode(this));
+      Transfer('Update $path', future: Storage().updateBlobNode(this));
 
   Transfer get download => Transfer(
     'Downloading $name',

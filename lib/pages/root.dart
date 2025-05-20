@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import '../services/storage/storage.dart';
 import '../../template/functions.dart';
 import '../template/widget/frame.dart';
 import '../services/nodes/root.dart';
-import '../services/endpoint.dart';
 import '../widgets/node_list.dart';
 import '../layers/profiles.dart';
 import '../widgets/loading.dart';
@@ -28,7 +28,7 @@ class _RootPageState extends State<RootPage> {
     return ListenableBuilder(
       listenable: root,
       builder: (context, child) => Frame(
-        title: Text(EndPoint().profile.name),
+        title: Text(Storage().profile.name),
         actions: [
           LoadingCircle(
             show: !root.loaded,

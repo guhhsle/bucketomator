@@ -7,7 +7,7 @@ import '../../layers/nodes/bucket.dart';
 import '../../template/functions.dart';
 import '../../pages/nodes/group.dart';
 import '../transfers/transfer.dart';
-import '../endpoint.dart';
+import '../storage/storage.dart';
 
 class BucketNode extends GroupNode {
   final Bucket bucket;
@@ -31,7 +31,7 @@ class BucketNode extends GroupNode {
   Transfer get forceRemove => Transfer(
     'Removing $name',
     future: () async {
-      await EndPoint().removeBucket(this);
+      await Storage().removeBucket(this);
       await RootNode().refresh();
     }.call(),
   );
