@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import '../services/nodes/node.dart';
+import '../services/nodes/sub.dart';
 import '../template/data.dart';
 
 class NodeList extends StatelessWidget {
-  final List<Node> nodes;
-  final bool loaded;
-  const NodeList({super.key, required this.nodes, required this.loaded});
+  final List<SubNode> nodes;
+  const NodeList({super.key, required this.nodes});
 
   @override
   Widget build(BuildContext context) {
-    if (loaded && nodes.isEmpty) {
+    if (nodes.isEmpty) {
       return Center(
         child: SingleChildScrollView(
           child: Icon(Icons.deselect_rounded, size: 64),

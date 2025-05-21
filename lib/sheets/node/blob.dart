@@ -25,7 +25,7 @@ class _BlobNodeSheetState extends State<BlobNodeSheet> {
   @override
   void initState() {
     blobNode = widget.blobNode;
-    blobNode.refresh();
+    blobNode.refresh(false);
     super.initState();
   }
 
@@ -53,7 +53,7 @@ class _BlobNodeSheetState extends State<BlobNodeSheet> {
                           }),
                         ),
                       ),
-                      LoadingCircle(show: !blobNode.loaded),
+                      LoadingCircle(node: blobNode),
                       IconButton(
                         icon: Icon(Icons.file_download_rounded),
                         onPressed: () => blobNode.download.call(),

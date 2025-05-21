@@ -8,7 +8,7 @@ import '../nodes/bucket.dart';
 import '../nodes/group.dart';
 import '../nodes/root.dart';
 import '../nodes/blob.dart';
-import '../nodes/node.dart';
+import '../nodes/sub.dart';
 import '../../data.dart';
 
 class Cache extends StorageProvider {
@@ -16,32 +16,38 @@ class Cache extends StorageProvider {
   String get tempPath => '${Pref.cachePath.value}/Temp';
   Directory get cacheDir => Directory(cachePath);
 
-  String nodePath(Node node) => '$cachePath/${node.fullPath}';
+  String nodePath(SubNode node) => '$cachePath/${node.fullPath}';
   Directory dirFromGroup(GroupNode node) => Directory(nodePath(node));
   File fileFromNode(BlobNode node) => File(nodePath(node));
 
   @override
-  Future<void> refreshRoot(RootNode root) async {
+  Future<void> refreshRoot(RootNode r) async => refreshRootSync(r);
+
+  void refreshRootSync(RootNode root) {
     try {
-      final result = cacheDir.listSync().map((e) {
-        return Bucket(null, nameFromPath(e.path));
+      root.buckets = cacheDir.listSync().map((entity) {
+        return BucketNode(
+          bucket: Bucket(null, nameFromPath(entity.path)),
+          fsEntity: entity,
+        );
       }).toList();
-      root.loadBuckets(result);
     } catch (e) {
       debugPrint('Loading fail for root: $e');
     }
   }
 
   @override
-  Future<void> refreshGroup(GroupNode group) async {
+  Future<void> refreshGroup(GroupNode g) async => refreshGroupSync(g);
+
+  void refreshGroupSync(GroupNode group) {
     try {
-      final nodes = <Node>[];
+      final nodes = <SubNode>[];
       final bucketName = group.bucketNode.name;
       final directory = dirFromGroup(group);
       for (final entity in directory.listSync()) {
         var path = entity.path.replaceFirst('$cachePath/$bucketName/', '');
         if (entity is Directory) {
-          nodes.add(PrefixNode(path: path, parent: group));
+          nodes.add(PrefixNode(path: path, parent: group, fsEntity: entity));
         }
         if (entity is File) {
           nodes.add(
@@ -50,10 +56,11 @@ class Cache extends StorageProvider {
               path: path,
               size: entity.statSync().size,
               date: entity.statSync().changed,
+              fsEntity: entity,
             ),
           );
         }
-        group.nodes = nodes;
+        group.subnodes = nodes;
       }
     } catch (e) {
       debugPrint('$e');

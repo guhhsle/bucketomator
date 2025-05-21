@@ -9,7 +9,7 @@ import '../transfers/transfer.dart';
 import '../storage/storage.dart';
 
 class PrefixNode extends GroupNode {
-  PrefixNode({required super.parent, required super.path});
+  PrefixNode({required super.parent, required super.path, super.fsEntity});
 
   @override
   Tile get toTile => Tile.complex(

@@ -35,7 +35,8 @@ enum Pref<T> {
   autoCapitalise('Auto Capitalise', false, Icons.text_fields_rounded, ui: true),
   sheetBlobs('Sheet blobs', false, Icons.border_bottom_rounded),
   //CACHE
-  cachePath(null, '', null);
+  cachePath(null, '', null),
+  autoRefresh('Auto refresh', true, Icons.refresh_rounded, ui: true);
 
   final T initial;
   final List<T>? all;
@@ -75,6 +76,8 @@ List<Tile> get settings {
     Tile('Background', Icons.tonality_rounded, '', ThemeLayer(false).show),
   ];
 }
+
+enum Status { pending, inProgress, completed, failed }
 
 enum BlobType {
   image,

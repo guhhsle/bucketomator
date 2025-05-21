@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minio/models.dart';
 import 'group.dart';
-import 'root.dart';
 import '../../template/class/tile.dart';
 import '../../layers/nodes/bucket.dart';
 import '../../template/functions.dart';
@@ -11,7 +10,7 @@ import '../storage/storage.dart';
 
 class BucketNode extends GroupNode {
   final Bucket bucket;
-  BucketNode({required this.bucket, super.path = ''});
+  BucketNode({required this.bucket, super.path = '', super.fsEntity});
 
   @override
   String get name => bucket.name;
@@ -32,7 +31,7 @@ class BucketNode extends GroupNode {
     'Removing $name',
     future: () async {
       await Storage().removeBucket(this);
-      await RootNode().refresh();
+      await Storage().root.refresh(true);
     }.call(),
   );
 }

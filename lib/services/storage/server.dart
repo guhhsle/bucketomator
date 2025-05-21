@@ -16,7 +16,7 @@ class Server extends StorageProvider {
   @override
   Future<void> refreshRoot(RootNode root) async {
     final result = await minio.listBuckets();
-    root.loadBuckets(result);
+    root.buckets = result.map((b) => BucketNode(bucket: b)).toList();
   }
 
   @override
@@ -24,7 +24,7 @@ class Server extends StorageProvider {
     final result = await minio
         .listObjects(group.bucketNode.name, prefix: group.path)
         .first;
-    group.nodes = [
+    group.subnodes = [
       ...result.prefixes.map((p) => PrefixNode(path: p, parent: group)),
       ...result.objects.map(
         (o) => BlobNode.fromObject(parent: group, object: o),

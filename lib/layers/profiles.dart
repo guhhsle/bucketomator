@@ -24,10 +24,7 @@ class ProfileLayer extends Layer {
 
   ProfileLayer({required this.profile});
 
-  String protectText(String text) {
-    if (text.isEmpty) return '';
-    return '***';
-  }
+  String protectText(String s) => s.isEmpty ? '' : '***';
 
   @override
   void construct() {
@@ -39,6 +36,7 @@ class ProfileLayer extends Layer {
       profile.name = newName;
       profile.backup();
     });
+
     final endPoint = protectText(profile.endPoint);
     final accessKey = protectText(profile.accessKey);
     final secretKey = protectText(profile.secretKey);
@@ -60,7 +58,7 @@ class ProfileLayer extends Layer {
     trailing = [
       IconButton(
         icon: Icon(Icons.delete_forever_rounded),
-        onPressed: profile.remove,
+        onPressed: () => profile.remove(),
       ),
     ];
   }

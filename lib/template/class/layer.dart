@@ -25,21 +25,21 @@ abstract class Layer extends ChangeNotifier {
 
   Widget get visual => VisualLayer(layer: this, key: Key('$hashCode'));
 
-  void layerChange() {
+  void reconstruct() {
     construct();
     notifyListeners();
   }
 
   void disposeListeners() {
     for (var listenable in listened) {
-      listenable.removeListener(layerChange);
+      listenable.removeListener(reconstruct);
     }
   }
 
   void initListeners() {
     listenTo(Preferences());
     for (var listenable in listened) {
-      listenable.addListener(layerChange);
+      listenable.addListener(reconstruct);
     }
   }
 

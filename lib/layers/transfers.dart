@@ -7,7 +7,7 @@ class TransfersLayer extends Layer {
   TransferManager get manager => TransferManager();
 
   @override
-  bool get scroll => true;
+  bool get scroll => true; //Multiline bricks
 
   @override
   void construct() {

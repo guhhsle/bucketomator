@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:minio/models.dart';
 import 'dart:convert';
 import 'group.dart';
-import 'node.dart';
 import '../../template/class/tile.dart';
 import '../../widgets/nodes/image.dart';
 import '../../widgets/nodes/video.dart';
@@ -19,14 +18,16 @@ import '../../template/data.dart';
 import '../storage/storage.dart';
 import '../../functions.dart';
 import '../../data.dart';
+import 'sub.dart';
 
-class BlobNode extends Node {
+class BlobNode extends SubNode {
   Uint8List _data = Uint8List(0);
   final textController = TextEditingController();
 
   BlobNode({
     super.date,
     super.size,
+    super.fsEntity,
     required super.path,
     required super.parent,
   });
@@ -44,7 +45,7 @@ class BlobNode extends Node {
   set data(Uint8List u) {
     _data = u;
     textController.text = textData;
-    notify();
+    notifyListeners();
   }
 
   String get extension => extensionFromPath(path);
@@ -83,7 +84,7 @@ class BlobNode extends Node {
       Icons.list_alt_rounded;
 
   @override
-  Future<void> refresh() => Storage().loadBlobNode(this);
+  Future<void> refresh(bool force) => Storage().loadBlobNode(this, force);
 
   void openLayer() => showModalBottomSheet(
     barrierLabel: 'Barrier',
@@ -96,7 +97,7 @@ class BlobNode extends Node {
     ),
   );
 
-  bool get hasData => loaded || data.isNotEmpty;
+  bool get hasData => serverStatus == Status.completed || data.isNotEmpty;
   BlobType get blobType => BlobType.fromExtension(extension);
 
   Widget get subWidget =>
@@ -118,7 +119,7 @@ class BlobNode extends Node {
     'Copying $name to $dest',
     future: () async {
       await Storage().copyBlobNode(this, dest);
-      await parent?.refresh();
+      await parent?.refresh(true);
     }.call(),
   );
 
@@ -135,7 +136,7 @@ class BlobNode extends Node {
     'Uploading $name',
     future: () async {
       await Storage().uploadNode(this);
-      await parent!.refresh();
+      await parent?.refresh(true);
     }.call(),
   );
 
@@ -149,7 +150,7 @@ class BlobNode extends Node {
   Transfer get download => Transfer(
     'Downloading $name',
     future: () async {
-      await refresh();
+      await refresh(!hasData);
       await FilePicker.platform.saveFile(fileName: name, bytes: data);
     }.call(),
   );

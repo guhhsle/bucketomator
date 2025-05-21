@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'transfers.dart';
 import '../template/widget/settings.dart';
+import '../layers/nodes/all_cached.dart';
 import '../template/class/layer.dart';
 import '../template/class/tile.dart';
 import '../template/functions.dart';
@@ -16,6 +17,10 @@ class MenuLayer extends Layer {
       Tile('Transfers', Icons.swap_horiz_rounded, '', () {
         Navigator.of(context).pop();
         TransfersLayer().show();
+      }),
+      Tile('Cache', Icons.memory_rounded, '', () {
+        Navigator.of(context).pop();
+        AllCachedNodesLayer().show();
       }),
       Tile.fromPref(Pref.nodeSort),
       Tile.fromPref(Pref.showHidden),

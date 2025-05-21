@@ -5,6 +5,7 @@ import '../nodes/group.dart';
 import '../nodes/root.dart';
 import '../nodes/blob.dart';
 import '../profile.dart';
+import '../../data.dart';
 
 abstract class StorageProvider {
   Profile get profile => Profiles().current;
@@ -28,6 +29,7 @@ class Storage {
   factory Storage() => instance;
   Storage.internal();
 
+  final root = RootNode();
   final server = Server();
   final cache = Cache();
 
@@ -36,26 +38,38 @@ class Storage {
     cache.copyBlobNode(node, dest);
   }
 
-  Future refreshRoot(RootNode root) async {
-    root.loaded = false;
+  Future refreshRoot(RootNode root, bool force) async {
+    root.cacheStatus = Status.inProgress;
     await cache.refreshRoot(root);
-    await server.refreshRoot(root);
-    root.loaded = true;
+    root.cacheStatus = Status.completed;
+    if (force || Pref.autoRefresh.value) {
+      root.serverStatus = Status.inProgress;
+      await server.refreshRoot(root);
+      root.serverStatus = Status.completed;
+    }
   }
 
-  Future refreshGroup(GroupNode node) async {
-    node.loaded = false;
+  Future refreshGroup(GroupNode node, bool force) async {
+    node.cacheStatus = Status.inProgress;
     await cache.refreshGroup(node);
-    await server.refreshGroup(node);
-    node.loaded = true;
+    node.cacheStatus = Status.completed;
+    if (force || Pref.autoRefresh.value) {
+      node.serverStatus = Status.inProgress;
+      await server.refreshGroup(node);
+      node.serverStatus = Status.completed;
+    }
   }
 
-  Future loadBlobNode(BlobNode node) async {
-    node.loaded = false;
+  Future loadBlobNode(BlobNode node, bool force) async {
+    node.cacheStatus = Status.inProgress;
     await cache.loadBlobNode(node);
-    await server.loadBlobNode(node);
-    cache.updateBlobNode(node);
-    node.loaded = true;
+    node.cacheStatus = Status.completed;
+    if (force || Pref.autoRefresh.value) {
+      node.serverStatus = Status.inProgress;
+      await server.loadBlobNode(node);
+      cache.updateBlobNode(node);
+      node.serverStatus = Status.completed;
+    }
   }
 
   Future removeBlobNodes(List<BlobNode> nodes) async {

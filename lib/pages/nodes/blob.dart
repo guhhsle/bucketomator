@@ -20,7 +20,7 @@ class _BlobNodePageState extends State<BlobNodePage> {
   @override
   void initState() {
     blobNode = widget.blobNode;
-    blobNode.refresh();
+    blobNode.refresh(false);
     super.initState();
   }
 
@@ -37,7 +37,7 @@ class _BlobNodePageState extends State<BlobNodePage> {
         title: Text(blobNode.name),
         actions: [
           LoadingCircle(
-            show: !blobNode.loaded,
+            node: blobNode,
             color: Theme.of(context).appBarTheme.foregroundColor,
           ),
           IconButton(

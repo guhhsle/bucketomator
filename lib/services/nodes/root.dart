@@ -1,40 +1,41 @@
-import 'package:flutter/material.dart';
-import 'package:minio/models.dart';
+import 'package:s3/services/nodes/loadable.dart';
 import 'bucket.dart';
+import 'sub.dart';
 import '../transfers/transfer.dart';
 import '../storage/storage.dart';
+import '../storage/cache.dart';
 
-class RootNode extends ChangeNotifier {
-  static final instance = RootNode.internal();
-  factory RootNode() => instance;
-  RootNode.internal();
+class RootNode extends LoadableNode {
+  List<BucketNode> _buckets = [];
+  List<SubNode> cachedNodes = [];
 
-  List<BucketNode> buckets = [];
-  bool _loaded = false;
+  List<BucketNode> get buckets => _buckets;
 
-  bool get loaded => _loaded;
-  set loaded(bool b) {
-    _loaded = b;
+  set buckets(List<BucketNode> list) {
+    _buckets = list..sort((a, b) => a.name.compareTo(b.name));
     notifyListeners();
   }
 
-  void loadBuckets(List<Bucket> list) {
-    buckets = list.map((bucket) {
-      return BucketNode(bucket: bucket);
-    }).toList();
-    buckets.sort((a, b) => a.name.compareTo(b.name));
-    notifyListeners();
-  }
-
-  void notify() => notifyListeners();
-
-  Future<void> refresh() => Storage().refreshRoot(this);
+  @override
+  Future<void> refresh(bool force) => Storage().refreshRoot(this, force);
 
   Transfer createBucket(String name) => Transfer(
     'Creating bucket $name',
     future: () async {
       await Storage().createBucket(name);
-      refresh();
+      await refresh(true);
     }.call(),
   );
+
+  void refreshCachedNodes() {
+    Cache().refreshRootSync(this);
+
+    cachedNodes = [];
+    for (final node in buckets) {
+      cachedNodes.add(node);
+      node.addCachedNodesTo(cachedNodes);
+    }
+    cachedNodes.sort((a, b) => a.fullPath.compareTo(b.fullPath));
+    notifyListeners();
+  }
 }

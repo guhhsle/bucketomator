@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'manager.dart';
 import '../../template/class/tile.dart';
-
-enum Status { pending, inProgress, completed, failed, waitingOnChildren }
+import '../../data.dart';
 
 class Transfer<T> extends ChangeNotifier {
   String? errorMessage;
@@ -67,7 +66,6 @@ class Transfer<T> extends ChangeNotifier {
         Status.failed: Icons.error_rounded,
         Status.inProgress: Icons.timelapse_rounded,
         Status.completed: Icons.done_rounded,
-        Status.waitingOnChildren: Icons.list_rounded,
       }[status] ??
       Icons.moped_rounded;
 }

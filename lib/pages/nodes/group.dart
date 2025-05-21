@@ -21,7 +21,7 @@ class _GroupNodePageState extends State<GroupNodePage> {
   @override
   void initState() {
     groupNode = widget.groupNode;
-    groupNode.refresh();
+    groupNode.refresh(false);
     super.initState();
   }
 
@@ -33,7 +33,7 @@ class _GroupNodePageState extends State<GroupNodePage> {
         title: Text(groupNode.displayName),
         actions: [
           LoadingCircle(
-            show: !groupNode.loaded,
+            node: groupNode,
             color: Theme.of(context).appBarTheme.foregroundColor,
           ),
           IconButton(
@@ -47,11 +47,8 @@ class _GroupNodePageState extends State<GroupNodePage> {
           ),
         ],
         child: RefreshIndicator(
-          onRefresh: groupNode.refresh,
-          child: NodeList(
-            nodes: groupNode.shownNodes,
-            loaded: groupNode.loaded,
-          ),
+          onRefresh: () => groupNode.refresh(true),
+          child: NodeList(nodes: groupNode.shownNodes),
         ),
       ),
     );

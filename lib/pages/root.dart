@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../services/storage/storage.dart';
 import '../../template/functions.dart';
 import '../template/widget/frame.dart';
-import '../services/nodes/root.dart';
 import '../widgets/node_list.dart';
 import '../layers/profiles.dart';
 import '../widgets/loading.dart';
@@ -18,20 +17,20 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage> {
   @override
   void initState() {
-    RootNode().refresh();
+    Storage().root.refresh(false);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final root = RootNode();
+    final root = Storage().root;
     return ListenableBuilder(
       listenable: root,
       builder: (context, child) => Frame(
         title: Text(Storage().profile.name),
         actions: [
           LoadingCircle(
-            show: !root.loaded,
+            node: root,
             color: Theme.of(context).appBarTheme.foregroundColor,
           ),
           IconButton(
@@ -51,8 +50,8 @@ class _RootPageState extends State<RootPage> {
           ),
         ],
         child: RefreshIndicator(
-          onRefresh: root.refresh,
-          child: NodeList(nodes: root.buckets, loaded: root.loaded),
+          onRefresh: () => root.refresh(true),
+          child: NodeList(nodes: root.buckets),
         ),
       ),
     );
