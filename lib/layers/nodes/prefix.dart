@@ -24,7 +24,7 @@ class PrefixNodeLayer extends Layer {
         await node.moveTo(dest).call();
         Navigator.of(context).pop();
       }),
-      Tile('Remove', Icons.delete_forever_rounded, '', node.tryRemove),
+      Tile('Delete', Icons.delete_forever_rounded, '', node.tryRemove),
     ];
   }
 }

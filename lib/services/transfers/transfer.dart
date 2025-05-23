@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'manager.dart';
 import '../../template/class/tile.dart';
+import '../../template/functions.dart';
 import '../../data.dart';
 
 class Transfer<T> extends ChangeNotifier {
@@ -31,6 +32,7 @@ class Transfer<T> extends ChangeNotifier {
     } catch (e) {
       futureStatus = Status.failed;
       errorMessage = '$e';
+      showSnack('$e', false);
       throw Error();
     }
     futureStatus = Status.completed;
@@ -58,7 +60,9 @@ class Transfer<T> extends ChangeNotifier {
     errorMessage: errorMessage ?? this.errorMessage,
   );
 
-  Tile get toTile => Tile(title, icon);
+  Tile get toTile => Tile(title, icon, '', () {
+    if (errorMessage != null) showSnack(errorMessage!, false);
+  });
 
   IconData get icon =>
       {

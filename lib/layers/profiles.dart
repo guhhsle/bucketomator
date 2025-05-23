@@ -37,7 +37,10 @@ class ProfileLayer extends Layer {
 
     list = [
       Tile('EndPoint', Icons.domain_rounded, endPoint, () async {
-        profile.endPoint = await getInput(profile.endPoint, 'EndPoint');
+        String endPoint = await getInput(profile.endPoint, 'EndPoint');
+        endPoint = endPoint.replaceAll('https://', '');
+        endPoint = endPoint.replaceFirst('http://', '');
+        profile.endPoint = endPoint;
         profile.backupCache();
       }),
       Tile('Access Key', Icons.key_rounded, accessKey, () async {

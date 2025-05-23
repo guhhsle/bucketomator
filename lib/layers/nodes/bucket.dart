@@ -11,6 +11,6 @@ class BucketNodeLayer extends Layer {
   @override
   void construct() {
     action = Tile(node.name, Icons.folder_copy_rounded);
-    list = [Tile('Remove', Icons.delete_forever_rounded, '', node.tryRemove)];
+    list = [Tile('Delete', Icons.delete_forever_rounded, '', node.tryRemove)];
   }
 }

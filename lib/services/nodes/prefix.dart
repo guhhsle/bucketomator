@@ -73,9 +73,4 @@ class PrefixNode extends GroupNode {
     }.call();
     return transfer;
   }
-
-  Transfer removeNodes(List<BlobNode> collected) => Transfer(
-    'Removing nodes in $name',
-    future: storage.removeBlobNodes(collected),
-  );
 }

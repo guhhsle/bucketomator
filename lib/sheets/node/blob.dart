@@ -1,3 +1,4 @@
+import 'package:bucketomator/layers/nodes/blob.dart';
 import 'package:flutter/material.dart';
 import '../../template/widget/tile_card.dart';
 import '../../services/nodes/blob.dart';
@@ -41,8 +42,8 @@ class BlobNodeSheet extends StatelessWidget {
                       ),
                       LoadingCircle(node: blobNode),
                       IconButton(
-                        icon: Icon(Icons.file_download_rounded),
-                        onPressed: () => blobNode.downloadAsIs.call(),
+                        icon: Icon(Icons.menu_rounded),
+                        onPressed: () => BlobNodeLayer(node: blobNode).show(),
                       ),
                     ],
                   ),

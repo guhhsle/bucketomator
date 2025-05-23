@@ -28,9 +28,12 @@ class BlobNodeLayer extends Layer {
       Tile('Sync & download', Icons.file_download_rounded, '', () {
         node.downloadRefreshed.call();
       }),
+      Tile('Download as is', Icons.file_download_rounded, '', () {
+        node.downloadAsIs.call();
+      }),
       Tile('${node.date?.toLocal()}', Icons.event_rounded),
       Tile('Size', Icons.memory_rounded, formatBytes(node.size)),
-      Tile('Remove', Icons.delete_forever_rounded, '', node.tryRemove),
+      Tile('Delete', Icons.delete_forever_rounded, '', node.tryRemove),
     ];
   }
 }

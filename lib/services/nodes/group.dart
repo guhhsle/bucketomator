@@ -77,6 +77,11 @@ abstract class GroupNode extends SubNode {
     }.call(),
   );
 
+  Transfer removeNodes(List<BlobNode> collected) => Transfer(
+    'Removing nodes in $name',
+    future: storage.removeBlobNodes(collected),
+  );
+
   void addCachedNodesTo(List<SubNode> collected) {
     cache.refreshGroupSync(this);
     for (final node in shownNodes) {

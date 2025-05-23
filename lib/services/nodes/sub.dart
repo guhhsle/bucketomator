@@ -33,8 +33,11 @@ abstract class SubNode extends LoadableNode {
 
   Transfer get forceRemove;
 
-  void tryRemove() =>
-      showSnack('Press to confirm', false, onTap: () => forceRemove.call());
+  void tryRemove() => showSnack(
+    'Press to confirm for $name',
+    false,
+    onTap: () => forceRemove.call(),
+  );
 
   Tile get toTile;
   Widget get toWidget => toTile.toWidget;

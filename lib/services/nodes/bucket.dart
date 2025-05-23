@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minio/models.dart';
+import 'blob.dart';
 import 'group.dart';
 import '../../template/class/tile.dart';
 import '../../layers/nodes/bucket.dart';
@@ -27,11 +28,16 @@ class BucketNode extends GroupNode {
   );
 
   @override
-  Transfer get forceRemove => Transfer(
-    'Removing $name',
-    future: () async {
+  Transfer get forceRemove {
+    final collected = <BlobNode>[];
+    final transfer = Transfer('Removing $name');
+
+    transfer.future = () async {
+      await addSubBlobNodesTo(collected).copyWith(parent: transfer).call();
+      await removeNodes(collected).copyWith(parent: transfer).call();
       await storage.removeBucket(this);
       await root.remotelyRefresh();
-    }.call(),
-  );
+    }.call();
+    return transfer;
+  }
 }
