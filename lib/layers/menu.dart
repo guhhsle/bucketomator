@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'transfers.dart';
+import '../services/storage/substorage.dart';
 import '../template/widget/settings.dart';
 import '../layers/nodes/all_cached.dart';
 import '../template/class/layer.dart';
@@ -8,6 +9,9 @@ import '../template/functions.dart';
 import '../data.dart';
 
 class MenuLayer extends Layer {
+  SubStorage storage;
+
+  MenuLayer({required this.storage});
   @override
   void construct() {
     action = Tile('Settings', Icons.tune_rounded, '', () {
@@ -20,7 +24,7 @@ class MenuLayer extends Layer {
       }),
       Tile('Cache', Icons.memory_rounded, '', () {
         Navigator.of(context).pop();
-        AllCachedNodesLayer().show();
+        AllCachedNodesLayer(storage: storage).show();
       }),
       Tile.fromPref(Pref.nodeSort),
       Tile.fromPref(Pref.showHidden),

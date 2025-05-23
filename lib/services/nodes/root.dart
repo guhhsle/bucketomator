@@ -1,34 +1,32 @@
-import 'package:s3/services/nodes/loadable.dart';
+import 'loadable.dart';
 import 'bucket.dart';
 import 'sub.dart';
 import '../transfers/transfer.dart';
-import '../storage/storage.dart';
-import '../storage/cache.dart';
+import '../storage/substorage.dart';
 
 class RootNode extends LoadableNode {
+  SubStorage subStorage;
   List<BucketNode> _buckets = [];
   List<SubNode> cachedNodes = [];
 
   List<BucketNode> get buckets => _buckets;
-
   set buckets(List<BucketNode> list) {
     _buckets = list..sort((a, b) => a.name.compareTo(b.name));
     notifyListeners();
   }
 
-  @override
-  Future<void> refresh(bool force) => Storage().refreshRoot(this, force);
+  RootNode({required this.subStorage});
 
   Transfer createBucket(String name) => Transfer(
     'Creating bucket $name',
     future: () async {
-      await Storage().createBucket(name);
-      await refresh(true);
+      await storage.createBucket(name);
+      await remotelyRefresh();
     }.call(),
   );
 
   void refreshCachedNodes() {
-    Cache().refreshRootSync(this);
+    storage.cache.refreshRootSync(this);
 
     cachedNodes = [];
     for (final node in buckets) {

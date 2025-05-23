@@ -25,8 +25,8 @@ class BlobNodeLayer extends Layer {
         await node.copyTo(dest).call();
         Navigator.of(context).pop();
       }),
-      Tile('Download', Icons.file_download_rounded, '', () {
-        node.download.call();
+      Tile('Sync & download', Icons.file_download_rounded, '', () {
+        node.downloadRefreshed.call();
       }),
       Tile('${node.date?.toLocal()}', Icons.event_rounded),
       Tile('Size', Icons.memory_rounded, formatBytes(node.size)),

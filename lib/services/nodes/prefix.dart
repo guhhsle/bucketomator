@@ -4,9 +4,7 @@ import 'group.dart';
 import '../../template/class/tile.dart';
 import '../../layers/nodes/prefix.dart';
 import '../../template/functions.dart';
-import '../../pages/nodes/group.dart';
 import '../transfers/transfer.dart';
-import '../storage/storage.dart';
 
 class PrefixNode extends GroupNode {
   PrefixNode({required super.parent, required super.path, super.fsEntity});
@@ -16,7 +14,7 @@ class PrefixNode extends GroupNode {
     displayName,
     Icons.folder_rounded,
     '',
-    () => goToPage(GroupNodePage(groupNode: this)),
+    open,
     onHold: () => PrefixNodeLayer(node: this).show(),
   );
 
@@ -38,7 +36,7 @@ class PrefixNode extends GroupNode {
     transfer.future = () async {
       await addSubBlobNodesTo(collected).copyWith(parent: transfer).call();
       await removeNodes(collected).copyWith(parent: transfer).call();
-      await refreshToRoot.copyWith(parent: transfer).call();
+      await refreshAncestors.copyWith(parent: transfer).call();
     }.call();
     return transfer;
   }
@@ -61,7 +59,7 @@ class PrefixNode extends GroupNode {
         transfers.add(blobNode.copyTo(newBlobDest).copyWith(parent: transfer));
       }
       await Future.wait(transfers.map((t) => t.call()));
-      await refreshToRoot.copyWith(parent: transfer).call();
+      await refreshAncestors.copyWith(parent: transfer).call();
     }.call();
 
     return transfer;
@@ -78,6 +76,6 @@ class PrefixNode extends GroupNode {
 
   Transfer removeNodes(List<BlobNode> collected) => Transfer(
     'Removing nodes in $name',
-    future: Storage().removeBlobNodes(collected),
+    future: storage.removeBlobNodes(collected),
   );
 }

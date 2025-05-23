@@ -1,21 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:minio/minio.dart';
 import 'dart:convert';
+import 'storage/substorage.dart';
 import '../template/class/tile.dart';
 import '../layers/profiles.dart';
 import '../data.dart';
-import 'storage/storage.dart';
 
-class Profile {
+class Profile with ChangeNotifier {
   String name, endPoint;
   String accessKey, secretKey;
+  late SubStorage subStorage;
 
-  Profile({
+  static ValueNotifier<Set<Profile>> cache = ValueNotifier({});
+
+  factory Profile({
+    required String name,
+    required String endPoint,
+    required String accessKey,
+    required String secretKey,
+  }) {
+    final temp = Profile.internal(
+      name: name,
+      endPoint: endPoint,
+      accessKey: accessKey,
+      secretKey: secretKey,
+    );
+    final original = cache.value.lookup(temp);
+    if (original != null) return original;
+    cache.value = {...cache.value, temp};
+    return temp;
+  }
+
+  Profile.internal({
     required this.name,
     required this.endPoint,
     required this.accessKey,
     required this.secretKey,
-  });
+  }) {
+    subStorage = SubStorage(profile: this);
+  }
 
   static Profile fromString(String s) => fromMap(jsonDecode(s));
 
@@ -42,7 +65,7 @@ class Profile {
   Tile get toTile => Tile.complex(
     name,
     Icons.person_rounded,
-    selected ? '*' : '',
+    isSelected ? '*' : '',
     select,
     onHold: ProfileLayer(profile: this).show,
   );
@@ -54,53 +77,42 @@ class Profile {
     );
   }
 
-  void backup() => Profiles().backup();
-  void remove() => Profiles().remove(this);
-  void add() => Profiles().add(this);
-  bool get selected => Pref.currentProfile.value == name;
+  bool get isSelected => Pref.accessKey.value == accessKey;
   void select() {
-    Pref.currentProfile.set(name);
-    Storage().root.refresh(true);
+    Pref.accessKey.set(accessKey);
+    subStorage.root.casuallyRefresh();
   }
-}
 
-class Profiles {
-  static final instance = Profiles.internal();
-  factory Profiles() => instance;
-  Profiles.internal();
+  @override
+  bool operator ==(Object other) =>
+      other is Profile && other.accessKey == accessKey;
 
-  List<Profile> allProfiles = [];
+  @override
+  int get hashCode => accessKey.hashCode;
 
-  void init() {
+  static void initCache() {
     for (final str in Pref.profiles.value) {
-      allProfiles.add(Profile.fromString(str));
+      Profile.fromString(str);
     }
   }
 
-  void backup() {
+  void backupCache() {
     List<String> strings = [];
-    for (final profile in allProfiles) {
+    for (final profile in cache.value) {
       strings.add('$profile');
     }
     Pref.profiles.set(strings);
   }
 
-  Profile get current {
-    for (final profile in allProfiles) {
-      if (profile.name == Pref.currentProfile.value) {
-        return profile;
-      }
+  static Profile get current {
+    for (final profile in cache.value) {
+      if (profile.isSelected) return profile;
     }
     return Profile.empty;
   }
 
-  void remove(Profile profile) {
-    allProfiles.remove(profile);
-    backup();
-  }
-
-  void add(Profile profile) {
-    allProfiles.add(profile);
-    backup();
+  void delete() {
+    cache.value = {...cache.value..remove(this)};
+    backupCache();
   }
 }

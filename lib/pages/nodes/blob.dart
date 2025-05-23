@@ -5,24 +5,10 @@ import '../../layers/nodes/blob.dart';
 import '../../widgets/loading.dart';
 import '../../template/data.dart';
 
-class BlobNodePage extends StatefulWidget {
+class BlobNodePage extends StatelessWidget {
   final BlobNode blobNode;
 
   const BlobNodePage({super.key, required this.blobNode});
-
-  @override
-  State<BlobNodePage> createState() => _BlobNodePageState();
-}
-
-class _BlobNodePageState extends State<BlobNodePage> {
-  late BlobNode blobNode;
-
-  @override
-  void initState() {
-    blobNode = widget.blobNode;
-    blobNode.refresh(false);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext c) {
@@ -44,7 +30,7 @@ class _BlobNodePageState extends State<BlobNodePage> {
             icon: Icon(Icons.save_rounded),
             tooltip: 'Save and exit',
             onPressed: () async {
-              await widget.blobNode.saveChanges();
+              await blobNode.saveChanges();
               // ignore: use_build_context_synchronously
               Navigator.of(c).pop();
             },

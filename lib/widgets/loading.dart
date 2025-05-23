@@ -9,9 +9,9 @@ class LoadingCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (node.serverStatus == Status.completed) {
+    if (node.networkStatus == Status.completed) {
       return Container();
-    } else if (node.serverStatus == Status.inProgress) {
+    } else if (node.networkStatus == Status.inProgress) {
       return IconButton(
         onPressed: () {},
         icon: SizedBox(
@@ -26,7 +26,7 @@ class LoadingCircle extends StatelessWidget {
     } else {
       return IconButton(
         icon: Icon(Icons.refresh_rounded),
-        onPressed: () => node.refresh(true),
+        onPressed: () => node.remotelyRefresh(),
       );
     }
   }

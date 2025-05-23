@@ -5,10 +5,10 @@ import '../../data.dart';
 
 class Transfer<T> extends ChangeNotifier {
   String? errorMessage;
+  Status futureStatus;
   Future<T>? future;
   Transfer? parent;
   String title;
-  Status futureStatus;
 
   Status get status => futureStatus;
 

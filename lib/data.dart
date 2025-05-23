@@ -30,7 +30,7 @@ enum Pref<T> {
   showHidden('Show hidden', true, Icons.visibility, ui: true),
   //PROFILES
   profiles('Profiles', <String>[], null),
-  currentProfile('Current Profile', '', null),
+  accessKey('Current access key', '', null),
   //INTERFACE
   autoCapitalise('Auto Capitalise', false, Icons.text_fields_rounded, ui: true),
   sheetBlobs('Sheet blobs', false, Icons.border_bottom_rounded),

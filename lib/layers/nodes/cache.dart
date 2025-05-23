@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../services/storage/storage.dart';
 import '../../template/class/layer.dart';
 import '../../template/class/tile.dart';
 import '../../services/nodes/sub.dart';
@@ -15,7 +14,7 @@ class CachedNodeLayer extends Layer {
         await node.fsEntity?.delete(recursive: true);
         // ignore: use_build_context_synchronously
         Navigator.of(context).pop();
-        Storage().root.refreshCachedNodes();
+        node.root.refreshCachedNodes();
       }),
     ];
   }

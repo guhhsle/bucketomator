@@ -1,9 +1,9 @@
-import '../storage/cache.dart';
 import 'blob.dart';
-import '../transfers/transfer.dart';
-import '../storage/storage.dart';
-import '../../data.dart';
 import 'sub.dart';
+import '../../template/functions.dart';
+import '../../pages/nodes/group.dart';
+import '../transfers/transfer.dart';
+import '../../data.dart';
 
 abstract class GroupNode extends SubNode {
   List<SubNode> _subnodes = [];
@@ -56,21 +56,18 @@ abstract class GroupNode extends SubNode {
 
   List<BlobNode> get shownBlobs => shownNodes.whereType<BlobNode>().toList();
 
-  @override
-  Future refresh(bool force) => Storage().refreshGroup(this, force);
-
   Transfer uploadFiles(List<String?> files) => Transfer(
     'Uploading ${files.length} files',
     future: () async {
-      await Storage().uploadPaths(this, files);
-      await refresh(true);
+      await storage.uploadPaths(this, files);
+      await remotelyRefresh();
     }.call(),
   );
 
   Transfer addSubBlobNodesTo(List<BlobNode> collected) => Transfer(
     'Collecting all subnodes in $name',
     future: () async {
-      await refresh(true);
+      await remotelyRefresh();
       collected.addAll(blobs);
       List<Future> futures = [];
       for (final group in groups) {
@@ -81,10 +78,16 @@ abstract class GroupNode extends SubNode {
   );
 
   void addCachedNodesTo(List<SubNode> collected) {
-    Cache().refreshGroupSync(this);
+    cache.refreshGroupSync(this);
     for (final node in shownNodes) {
       collected.add(node);
       if (node is GroupNode) node.addCachedNodesTo(collected);
     }
+  }
+
+  @override
+  void open() {
+    casuallyRefresh();
+    goToPage(GroupNodePage(groupNode: this));
   }
 }

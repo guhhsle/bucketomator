@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:s3/services/nodes/loadable.dart';
-import 'bucket.dart';
-import 'group.dart';
+import 'dart:io';
+import 'loadable.dart';
 import '../../template/class/tile.dart';
 import '../../template/functions.dart';
 import '../../layers/nodes/cache.dart';
@@ -13,13 +11,12 @@ import '../../data.dart';
 abstract class SubNode extends LoadableNode {
   String path; //Path inside the bucket
   FileSystemEntity? fsEntity;
-  GroupNode? parent;
   DateTime? date;
   int? size;
 
   SubNode({
     required this.path,
-    this.parent,
+    super.parent,
     this.date,
     this.size,
     this.fsEntity,
@@ -31,7 +28,8 @@ abstract class SubNode extends LoadableNode {
     return name;
   }
 
-  String get fullPath => '${bucketNode.name}/$path';
+  void open();
+  String get fullPath => '${bucket.name}/$path';
 
   Transfer get forceRemove;
 
@@ -40,36 +38,6 @@ abstract class SubNode extends LoadableNode {
 
   Tile get toTile;
   Widget get toWidget => toTile.toWidget;
-
-  int get depth {
-    if (this is BucketNode) return 0;
-    int result = -1;
-    SubNode? node = this;
-    while (node != null) {
-      node = node.parent;
-      result++;
-    }
-    return result;
-  }
-
-  BucketNode get bucketNode {
-    SubNode? node = this;
-    while (node != null) {
-      if (node is BucketNode) return node;
-      node = node.parent!;
-    }
-    throw Error();
-  }
-
-  Transfer get refreshToRoot {
-    List<Future> futures = [];
-    SubNode? node = this;
-    while (node != null) {
-      futures.add(node.refresh(true));
-      node = node.parent;
-    }
-    return Transfer('Refreshing', future: Future.wait(futures));
-  }
 
   Tile get toCacheTile {
     final tile = toTile;

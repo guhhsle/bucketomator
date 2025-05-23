@@ -3,35 +3,35 @@ import 'package:minio/models.dart';
 import 'group.dart';
 import '../../template/class/tile.dart';
 import '../../layers/nodes/bucket.dart';
-import '../../template/functions.dart';
-import '../../pages/nodes/group.dart';
 import '../transfers/transfer.dart';
-import '../storage/storage.dart';
 
 class BucketNode extends GroupNode {
-  final Bucket bucket;
-  BucketNode({required this.bucket, super.path = '', super.fsEntity});
+  final Bucket literalBucket; //Could've just been a String for bucket name
+  BucketNode({
+    required this.literalBucket,
+    required super.parent,
+    super.path = '',
+    super.fsEntity,
+  });
 
   @override
-  String get name => bucket.name;
+  String get name => literalBucket.name;
 
   @override
-  Tile get toTile {
-    return Tile.complex(
-      displayName,
-      Icons.folder_copy_rounded,
-      '',
-      () => goToPage(GroupNodePage(groupNode: this)),
-      onHold: () => BucketNodeLayer(node: this).show(),
-    );
-  }
+  Tile get toTile => Tile.complex(
+    displayName,
+    Icons.folder_copy_rounded,
+    '',
+    open,
+    onHold: () => BucketNodeLayer(node: this).show(),
+  );
 
   @override
   Transfer get forceRemove => Transfer(
     'Removing $name',
     future: () async {
-      await Storage().removeBucket(this);
-      await Storage().root.refresh(true);
+      await storage.removeBucket(this);
+      await root.remotelyRefresh();
     }.call(),
   );
 }

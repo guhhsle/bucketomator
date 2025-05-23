@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import '../../services/storage/storage.dart';
+import '../../services/storage/substorage.dart';
 import '../../template/class/layer.dart';
 import '../../template/class/tile.dart';
 import '../../template/functions.dart';
 import '../../services/nodes/sub.dart';
 
 class AllCachedNodesLayer extends Layer {
+  final SubStorage storage;
   String query = '';
-  AllCachedNodesLayer() {
-    Storage().root.refreshCachedNodes();
+  AllCachedNodesLayer({required this.storage}) {
+    storage.root.refreshCachedNodes();
   }
   List<SubNode> get queriedCachedNodes {
     final results = <SubNode>[];
-    for (final node in Storage().root.cachedNodes) {
+    for (final node in storage.root.cachedNodes) {
       if (node.fullPath.toLowerCase().contains(query.toLowerCase())) {
         results.add(node);
       }
@@ -22,7 +23,7 @@ class AllCachedNodesLayer extends Layer {
 
   @override
   void construct() {
-    listenTo(Storage().root);
+    listenTo(storage);
     String actionName = 'Search cache';
     if (query.isNotEmpty) actionName = query;
     action = Tile(actionName, Icons.search_rounded, '', () async {

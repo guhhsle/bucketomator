@@ -3,7 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:minio/models.dart';
 import 'dart:convert';
+import 'dart:io';
 import 'group.dart';
+import 'sub.dart';
 import '../../template/class/tile.dart';
 import '../../widgets/nodes/image.dart';
 import '../../widgets/nodes/video.dart';
@@ -15,10 +17,8 @@ import '../../layers/nodes/blob.dart';
 import '../../sheets/node/blobs.dart';
 import '../transfers/transfer.dart';
 import '../../template/data.dart';
-import '../storage/storage.dart';
 import '../../functions.dart';
 import '../../data.dart';
-import 'sub.dart';
 
 class BlobNode extends SubNode {
   Uint8List _data = Uint8List(0);
@@ -62,18 +62,38 @@ class BlobNode extends SubNode {
   );
 
   @override
-  Tile get toTile => Tile.complex(displayName, icon, '', () {
+  Tile get toTile => Tile.complex(
+    displayName,
+    icon,
+    '',
+    () => open(),
+    onHold: () => BlobNodeLayer(node: this).show(),
+  );
+
+  @override
+  void open() {
+    casuallyRefresh();
+    ((('CASUALLY')));
     if (Pref.sheetBlobs.value) {
-      openLayer();
+      showModalBottomSheet(
+        barrierLabel: 'Barrier',
+        context: navigatorKey.currentContext!,
+        isScrollControlled: true,
+        barrierColor: Colors.black.withValues(alpha: 0.3),
+        builder: (c) => BlobNodesSheet(
+          initialIndex: group.shownBlobs.indexOf(this),
+          group: group,
+        ),
+      );
     } else {
       goToPage(
         BlobNodesPage(
-          group: parent!,
-          initialIndex: parent!.shownBlobs.indexOf(this),
+          group: group,
+          initialIndex: group.shownBlobs.indexOf(this),
         ),
       );
     }
-  }, onHold: () => BlobNodeLayer(node: this).show());
+  }
 
   IconData get icon =>
       {
@@ -83,21 +103,7 @@ class BlobNode extends SubNode {
       }[blobType] ??
       Icons.list_alt_rounded;
 
-  @override
-  Future<void> refresh(bool force) => Storage().loadBlobNode(this, force);
-
-  void openLayer() => showModalBottomSheet(
-    barrierLabel: 'Barrier',
-    context: navigatorKey.currentContext!,
-    isScrollControlled: true,
-    barrierColor: Colors.black.withValues(alpha: 0.3),
-    builder: (c) => BlobNodesSheet(
-      initialIndex: parent!.shownBlobs.indexOf(this),
-      group: parent!,
-    ),
-  );
-
-  bool get hasData => serverStatus == Status.completed || data.isNotEmpty;
+  bool get isSynced => networkStatus == Status.completed || data.isNotEmpty;
   BlobType get blobType => BlobType.fromExtension(extension);
 
   Widget get subWidget =>
@@ -111,15 +117,15 @@ class BlobNode extends SubNode {
   Future<void> saveChanges() async {
     if (blobType == BlobType.text) {
       textData = textController.text;
-      await update();
+      await store.call();
     }
   }
 
   Transfer copyTo(String dest) => Transfer(
     'Copying $name to $dest',
     future: () async {
-      await Storage().copyBlobNode(this, dest);
-      await parent?.refresh(true);
+      await storage.copyBlobNode(this, dest);
+      await parent?.remotelyRefresh();
     }.call(),
   );
 
@@ -132,26 +138,32 @@ class BlobNode extends SubNode {
     return transfer;
   }
 
-  Transfer get upload => Transfer(
+  Transfer get store => Transfer(
     'Uploading $name',
     future: () async {
-      await Storage().uploadNode(this);
-      await parent?.refresh(true);
+      await storage.store(this);
+      await parent?.remotelyRefresh();
     }.call(),
   );
 
   @override
   Transfer get forceRemove =>
-      Transfer('Removing $name', future: Storage().removeBlobNode(this));
+      Transfer('Removing $name', future: storage.removeBlobNode(this));
 
-  Transfer get update =>
-      Transfer('Update $path', future: Storage().updateBlobNode(this));
-
-  Transfer get download => Transfer(
+  Transfer get downloadRefreshed => Transfer(
     'Downloading $name',
     future: () async {
-      await refresh(!hasData);
+      await remotelyRefresh();
       await FilePicker.platform.saveFile(fileName: name, bytes: data);
     }.call(),
   );
+
+  Transfer get downloadAsIs => Transfer(
+    'Downloading $name as is',
+    future: () async {
+      await FilePicker.platform.saveFile(fileName: name, bytes: data);
+    }.call(),
+  );
+
+  Future<File> storeTemporarily() => cache.tempFileFromBlobNode(this);
 }

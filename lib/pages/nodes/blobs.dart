@@ -17,8 +17,8 @@ class BlobNodesPage extends StatefulWidget {
 }
 
 class _BlobNodesPageState extends State<BlobNodesPage> {
-  late GroupNode group;
   late PageController pageController;
+  late GroupNode group;
 
   @override
   void initState() {

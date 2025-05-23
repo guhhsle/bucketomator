@@ -5,7 +5,7 @@ import '../../template/class/tile.dart';
 import '../../widgets/loading.dart';
 import '../../template/data.dart';
 
-class BlobNodeSheet extends StatefulWidget {
+class BlobNodeSheet extends StatelessWidget {
   final BlobNode blobNode;
   final ScrollController scrollController;
 
@@ -14,20 +14,6 @@ class BlobNodeSheet extends StatefulWidget {
     required this.scrollController,
     required this.blobNode,
   });
-
-  @override
-  State<BlobNodeSheet> createState() => _BlobNodeSheetState();
-}
-
-class _BlobNodeSheetState extends State<BlobNodeSheet> {
-  late BlobNode blobNode;
-
-  @override
-  void initState() {
-    blobNode = widget.blobNode;
-    blobNode.refresh(false);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext c) {
@@ -47,7 +33,7 @@ class _BlobNodeSheetState extends State<BlobNodeSheet> {
                       Expanded(
                         child: TileCard(
                           Tile(blobNode.name, Icons.save_rounded, '', () async {
-                            await widget.blobNode.saveChanges();
+                            await blobNode.saveChanges();
                             // ignore: use_build_context_synchronously
                             Navigator.of(c).pop();
                           }),
@@ -56,7 +42,7 @@ class _BlobNodeSheetState extends State<BlobNodeSheet> {
                       LoadingCircle(node: blobNode),
                       IconButton(
                         icon: Icon(Icons.file_download_rounded),
-                        onPressed: () => blobNode.download.call(),
+                        onPressed: () => blobNode.downloadAsIs.call(),
                       ),
                     ],
                   ),
@@ -64,11 +50,11 @@ class _BlobNodeSheetState extends State<BlobNodeSheet> {
                     child: blobNode.blobType.isFixedHeight
                         ? SingleChildScrollView(
                             physics: bouncePhysics,
+                            controller: scrollController,
                             padding: EdgeInsets.only(
                               bottom: 64,
                               left: 8,
                               right: 8,
-                              top: 16,
                             ),
                             child: blobNode.subWidget,
                           )

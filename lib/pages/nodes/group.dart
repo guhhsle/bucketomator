@@ -8,22 +8,9 @@ import '../../layers/nodes/add.dart';
 import '../../widgets/loading.dart';
 import '../../layers/menu.dart';
 
-class GroupNodePage extends StatefulWidget {
+class GroupNodePage extends StatelessWidget {
   final GroupNode groupNode;
   const GroupNodePage({super.key, required this.groupNode});
-
-  @override
-  State<GroupNodePage> createState() => _GroupNodePageState();
-}
-
-class _GroupNodePageState extends State<GroupNodePage> {
-  late GroupNode groupNode;
-  @override
-  void initState() {
-    groupNode = widget.groupNode;
-    groupNode.refresh(false);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +30,11 @@ class _GroupNodePageState extends State<GroupNodePage> {
           IconButton(
             tooltip: t('Settings'),
             icon: const Icon(Icons.menu_rounded),
-            onPressed: MenuLayer().show,
+            onPressed: MenuLayer(storage: groupNode.storage).show,
           ),
         ],
         child: RefreshIndicator(
-          onRefresh: () => groupNode.refresh(true),
+          onRefresh: () => groupNode.remotelyRefresh(),
           child: NodeList(nodes: groupNode.shownNodes),
         ),
       ),

@@ -12,6 +12,7 @@ Future<void> main() async {
   if (Pref.cachePath.value == '') {
     Pref.cachePath.set((await getApplicationCacheDirectory()).path);
   }
-  Profiles().init();
+  Profile.initCache();
+  Profile.current.subStorage.root.casuallyRefresh();
   runApp(const App(title: 'S3', child: RootPage()));
 }

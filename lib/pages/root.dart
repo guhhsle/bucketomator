@@ -1,33 +1,23 @@
 import 'package:flutter/material.dart';
-import '../services/storage/storage.dart';
 import '../../template/functions.dart';
 import '../template/widget/frame.dart';
 import '../widgets/node_list.dart';
+import '../services/profile.dart';
 import '../layers/profiles.dart';
 import '../widgets/loading.dart';
 import '../layers/menu.dart';
 
-class RootPage extends StatefulWidget {
+class RootPage extends StatelessWidget {
   const RootPage({super.key});
 
   @override
-  State<RootPage> createState() => _RootPageState();
-}
-
-class _RootPageState extends State<RootPage> {
-  @override
-  void initState() {
-    Storage().root.refresh(false);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final root = Storage().root;
+    final root = Profile.current.subStorage.root;
+    //Here because it should dynamically show only the current root
     return ListenableBuilder(
       listenable: root,
       builder: (context, child) => Frame(
-        title: Text(Storage().profile.name),
+        title: Text(root.storage.profile.name),
         actions: [
           LoadingCircle(
             node: root,
@@ -46,11 +36,11 @@ class _RootPageState extends State<RootPage> {
           IconButton(
             tooltip: t('Settings'),
             icon: const Icon(Icons.menu_rounded),
-            onPressed: MenuLayer().show,
+            onPressed: MenuLayer(storage: root.storage).show,
           ),
         ],
         child: RefreshIndicator(
-          onRefresh: () => root.refresh(true),
+          onRefresh: () => root.remotelyRefresh(),
           child: NodeList(nodes: root.buckets),
         ),
       ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:minio/models.dart';
 import 'dart:io';
-import 'storage.dart';
+import 'provider.dart';
+import '../../template/functions.dart';
 import '../../functions.dart';
 import '../nodes/prefix.dart';
 import '../nodes/bucket.dart';
@@ -12,13 +13,16 @@ import '../nodes/sub.dart';
 import '../../data.dart';
 
 class Cache extends StorageProvider {
-  String get cachePath => '${Pref.cachePath.value}/S3';
-  String get tempPath => '${Pref.cachePath.value}/Temp';
   Directory get cacheDir => Directory(cachePath);
+  String get accessKey => storage.profile.accessKey;
+  String get tempPath => '${Pref.cachePath.value}/Temp/$accessKey';
+  String get cachePath => '${Pref.cachePath.value}/S3/$accessKey';
 
-  String nodePath(SubNode node) => '$cachePath/${node.fullPath}';
+  Cache({required super.storage});
+
   Directory dirFromGroup(GroupNode node) => Directory(nodePath(node));
   File fileFromNode(BlobNode node) => File(nodePath(node));
+  String nodePath(SubNode node) => '$cachePath/${node.fullPath}';
 
   @override
   Future<void> refreshRoot(RootNode r) async => refreshRootSync(r);
@@ -27,7 +31,8 @@ class Cache extends StorageProvider {
     try {
       root.buckets = cacheDir.listSync().map((entity) {
         return BucketNode(
-          bucket: Bucket(null, nameFromPath(entity.path)),
+          literalBucket: Bucket(null, nameFromPath(entity.path)),
+          parent: storage.root,
           fsEntity: entity,
         );
       }).toList();
@@ -39,10 +44,19 @@ class Cache extends StorageProvider {
   @override
   Future<void> refreshGroup(GroupNode g) async => refreshGroupSync(g);
 
+  void tryClear() => showSnack(
+    'Press to confirm',
+    false,
+    onTap: () async {
+      await cacheDir.delete(recursive: true);
+      storage.root.refreshCachedNodes();
+    },
+  );
+
   void refreshGroupSync(GroupNode group) {
     try {
       final nodes = <SubNode>[];
-      final bucketName = group.bucketNode.name;
+      final bucketName = group.bucket.name;
       final directory = dirFromGroup(group);
       for (final entity in directory.listSync()) {
         var path = entity.path.replaceFirst('$cachePath/$bucketName/', '');
@@ -68,7 +82,7 @@ class Cache extends StorageProvider {
   }
 
   @override
-  Future<void> loadBlobNode(BlobNode node) async {
+  Future<void> refreshBlob(BlobNode node) async {
     try {
       node.data = await fileFromNode(node).readAsBytes();
     } catch (e) {
@@ -77,10 +91,7 @@ class Cache extends StorageProvider {
   }
 
   @override
-  Future<void> uploadNode(BlobNode node) => updateBlobNode(node);
-
-  @override
-  Future<void> updateBlobNode(BlobNode node) async {
+  Future<void> store(BlobNode node) async {
     try {
       final file = fileFromNode(node);
       await file.create(recursive: true);
@@ -94,7 +105,8 @@ class Cache extends StorageProvider {
   Future<void> copyBlobNode(BlobNode node, String dest) async {
     try {
       final file = fileFromNode(node);
-      await file.copy('$cachePath/${node.parent!.name}/$dest');
+      await file.copy('$cachePath/${node.bucket.name}/$dest');
+      //TODO test
     } catch (e) {
       debugPrint('$e');
     }

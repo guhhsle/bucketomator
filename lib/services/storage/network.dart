@@ -1,7 +1,7 @@
 import 'package:minio/minio.dart';
 import 'package:minio/io.dart';
 import 'dart:typed_data';
-import 'storage.dart';
+import 'provider.dart';
 import '../../template/functions.dart';
 import '../../functions.dart';
 import '../nodes/bucket.dart';
@@ -10,19 +10,23 @@ import '../nodes/group.dart';
 import '../nodes/root.dart';
 import '../nodes/blob.dart';
 
-class Server extends StorageProvider {
-  Minio get minio => profile.toMinio;
+class Network extends StorageProvider {
+  Minio get minio => storage.profile.toMinio;
+
+  Network({required super.storage});
 
   @override
   Future<void> refreshRoot(RootNode root) async {
     final result = await minio.listBuckets();
-    root.buckets = result.map((b) => BucketNode(bucket: b)).toList();
+    root.buckets = result.map((b) {
+      return BucketNode(literalBucket: b, parent: root);
+    }).toList();
   }
 
   @override
   Future<void> refreshGroup(GroupNode group) async {
     final result = await minio
-        .listObjects(group.bucketNode.name, prefix: group.path)
+        .listObjects(group.bucket.name, prefix: group.path)
         .first;
     group.subnodes = [
       ...result.prefixes.map((p) => PrefixNode(path: p, parent: group)),
@@ -33,7 +37,7 @@ class Server extends StorageProvider {
   }
 
   @override
-  Future<void> loadBlobNode(BlobNode node) async {
+  Future<void> refreshBlob(BlobNode node) async {
     final stream = await streamBlobNode(node);
     final bytesList = <int>[];
     await for (final chunk in stream) {
@@ -43,28 +47,24 @@ class Server extends StorageProvider {
   }
 
   Future<MinioByteStream> streamBlobNode(BlobNode node) =>
-      minio.getObject(node.bucketNode.name, node.path);
-
-  @override
-  Future<String> updateBlobNode(BlobNode node) =>
-      minio.putObject(node.bucketNode.name, node.path, Stream.value(node.data));
+      minio.getObject(node.bucket.name, node.path);
 
   @override
   Future<void> copyBlobNode(BlobNode node, String dest) =>
-      minio.copyObject(node.bucketNode.name, dest, node.fullPath);
+      minio.copyObject(node.bucket.name, dest, node.fullPath);
 
   @override
   Future<void> removeBlobNodes(List<BlobNode> nodes) async {
     final paths = nodes.map((node) => node.path).toList();
-    await minio.removeObjects(nodes.first.bucketNode.name, paths);
+    await minio.removeObjects(nodes.first.bucket.name, paths);
     for (final node in nodes) {
-      node.parent?.refreshToRoot();
+      node.parent?.refreshAncestors;
     }
   }
 
   @override
-  Future<void> uploadNode(BlobNode node) =>
-      minio.putObject(node.bucketNode.name, node.path, Stream.value(node.data));
+  Future<void> store(BlobNode node) =>
+      minio.putObject(node.bucket.name, node.path, Stream.value(node.data));
 
   @override
   Future<void> uploadPaths(GroupNode parent, List<String?> paths) async {
@@ -76,7 +76,7 @@ class Server extends StorageProvider {
       final bucketPath = parent.path + name;
       try {
         showSnack('${i + 1}/$length $name', true);
-        await minio.fPutObject(parent.bucketNode.name, bucketPath, filePath);
+        await minio.fPutObject(parent.bucket.name, bucketPath, filePath);
       } catch (e) {
         showSnack('Error when uploading $name $e', false);
       }

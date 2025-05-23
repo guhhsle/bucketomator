@@ -1,6 +1,5 @@
 import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
-import '../../services/storage/cache.dart';
 import '../../services/nodes/blob.dart';
 
 class VideoNodeWidget extends StatefulWidget {
@@ -18,7 +17,7 @@ class _VideoNodeWidgetState extends State<VideoNodeWidget> {
   void initState() {
     widget.blobNode.addListener(() async {
       if (controller == null && widget.blobNode.data.isNotEmpty) {
-        final file = await Cache().tempFileFromBlobNode(widget.blobNode);
+        final file = await widget.blobNode.storeTemporarily();
         final controller = VideoPlayerController.file(file);
         await controller.initialize();
         setState(() {});

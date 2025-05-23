@@ -3,18 +3,15 @@ import '../template/class/layer.dart';
 import '../template/class/tile.dart';
 import '../template/functions.dart';
 import '../services/profile.dart';
-import '../data.dart';
 
 class ProfilesLayer extends Layer {
   @override
   void construct() {
+    listenTo(Profile.cache);
     action = Tile('Profiles', Icons.person_rounded);
-    list = Profiles().allProfiles.map((p) => p.toTile);
+    list = Profile.cache.value.map((p) => p.toTile);
     trailing = [
-      IconButton(
-        icon: Icon(Icons.add_rounded),
-        onPressed: () => Profile.empty.add(),
-      ),
+      IconButton(icon: Icon(Icons.add_rounded), onPressed: () => Profile.empty),
     ];
   }
 }
@@ -28,13 +25,10 @@ class ProfileLayer extends Layer {
 
   @override
   void construct() {
+    listenTo(Profile.cache);
     action = Tile(profile.name, Icons.edit_rounded, '', () async {
-      final newName = await getInput(profile.name, 'Name');
-      if (Pref.currentProfile.value == profile.name) {
-        Pref.currentProfile.set(newName);
-      }
-      profile.name = newName;
-      profile.backup();
+      profile.name = await getInput(profile.name, 'Name');
+      profile.backupCache();
     });
 
     final endPoint = protectText(profile.endPoint);
@@ -44,21 +38,21 @@ class ProfileLayer extends Layer {
     list = [
       Tile('EndPoint', Icons.domain_rounded, endPoint, () async {
         profile.endPoint = await getInput(profile.endPoint, 'EndPoint');
-        profile.backup();
+        profile.backupCache();
       }),
       Tile('Access Key', Icons.key_rounded, accessKey, () async {
         profile.accessKey = await getInput(profile.accessKey, 'Access Key');
-        profile.backup();
+        profile.backupCache();
       }),
       Tile('Secret Key', Icons.password_rounded, secretKey, () async {
         profile.secretKey = await getInput(profile.secretKey, 'Secret Key');
-        profile.backup();
+        profile.backupCache();
       }),
     ];
     trailing = [
       IconButton(
         icon: Icon(Icons.delete_forever_rounded),
-        onPressed: () => profile.remove(),
+        onPressed: () => profile.delete(),
       ),
     ];
   }
