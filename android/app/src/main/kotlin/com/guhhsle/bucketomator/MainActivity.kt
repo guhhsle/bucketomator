@@ -1,4 +1,4 @@
-package com.guhhsle.s3
+package com.guhhsle.bucketomator
 
 import io.flutter.embedding.android.FlutterActivity
 

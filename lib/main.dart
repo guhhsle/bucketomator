@@ -14,5 +14,5 @@ Future<void> main() async {
   }
   Profile.initCache();
   Profile.current.subStorage.root.casuallyRefresh();
-  runApp(const App(title: 'S3', child: RootPage()));
+  runApp(const App(title: 'Bucketomator', child: RootPage()));
 }
