@@ -20,7 +20,7 @@ class SubNodeWidget extends StatelessWidget {
             child: Text(
               tile.title,
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 backgroundColor: Theme.of(context).colorScheme.surface,
               ),
             ),
