@@ -41,7 +41,7 @@ class RootPage extends StatelessWidget {
         ],
         child: RefreshIndicator(
           onRefresh: () => root.remotelyRefresh(),
-          child: NodeList(nodes: root.buckets),
+          child: NodeList(nodes: root.subnodes),
         ),
       ),
     );

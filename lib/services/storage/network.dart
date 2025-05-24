@@ -1,12 +1,12 @@
 import 'package:minio/minio.dart';
 import 'package:minio/io.dart';
 import 'dart:typed_data';
+import '../nodes/subgroup.dart';
 import 'provider.dart';
 import '../../template/functions.dart';
 import '../../functions.dart';
 import '../nodes/bucket.dart';
 import '../nodes/prefix.dart';
-import '../nodes/group.dart';
 import '../nodes/root.dart';
 import '../nodes/blob.dart';
 
@@ -18,13 +18,13 @@ class Network extends StorageProvider {
   @override
   Future<void> refreshRoot(RootNode root) async {
     final result = await minio.listBuckets();
-    root.buckets = result.map((b) {
+    root.subnodes = result.map((b) {
       return BucketNode(literalBucket: b, parent: root);
     }).toList();
   }
 
   @override
-  Future<void> refreshGroup(GroupNode group) async {
+  Future<void> refreshSubGroup(SubGroupNode group) async {
     final result = await minio
         .listObjects(group.bucket.name, prefix: group.path)
         .first;
@@ -67,7 +67,7 @@ class Network extends StorageProvider {
       minio.putObject(node.bucket.name, node.path, Stream.value(node.data));
 
   @override
-  Future<void> uploadPaths(GroupNode parent, List<String?> paths) async {
+  Future<void> uploadPaths(SubGroupNode parent, List<String?> paths) async {
     final length = paths.length;
     for (int i = 0; i < length; i++) {
       final filePath = paths[i];

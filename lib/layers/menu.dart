@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'transfers.dart';
+import 'transfer.dart';
 import '../services/storage/substorage.dart';
 import '../template/widget/settings.dart';
 import '../layers/nodes/all_cached.dart';
@@ -20,7 +20,7 @@ class MenuLayer extends Layer {
     list = [
       Tile('Transfers', Icons.swap_horiz_rounded, '', () {
         Navigator.of(context).pop();
-        TransfersLayer().show();
+        TransferLayer().show();
       }),
       Tile('Cache', Icons.memory_rounded, '', () {
         Navigator.of(context).pop();

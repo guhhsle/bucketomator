@@ -1,14 +1,11 @@
+import 'loadable.dart';
+import 'subgroup.dart';
 import 'blob.dart';
 import 'sub.dart';
-import '../../template/functions.dart';
-import '../../pages/nodes/group.dart';
-import '../transfers/transfer.dart';
 import '../../data.dart';
 
-abstract class GroupNode extends SubNode {
+mixin GroupNode on LoadableNode {
   List<SubNode> _subnodes = [];
-
-  GroupNode({required super.path, super.parent, super.fsEntity});
 
   List<SubNode> get subnodes => _subnodes;
   set subnodes(List<SubNode> list) {
@@ -16,7 +13,7 @@ abstract class GroupNode extends SubNode {
     notifyListeners();
   }
 
-  List<GroupNode> get groups => subnodes.whereType<GroupNode>().toList();
+  List<SubGroupNode> get groups => subnodes.whereType<SubGroupNode>().toList();
   List<BlobNode> get blobs => subnodes.whereType<BlobNode>().toList();
 
   List<SubNode> get shownNodes {
@@ -44,55 +41,13 @@ abstract class GroupNode extends SubNode {
     if (!Pref.showHidden.value) {
       shown.removeWhere((node) => node.name.startsWith('.'));
     }
-    final shownGroups = shown.whereType<GroupNode>().toList();
-    final shownBlobs = shown.whereType<BlobNode>().toList();
+    final shownGroups = shown.whereType<SubGroupNode>();
+    final shownBlobs = shown.whereType<BlobNode>();
 
     if (Pref.prefixFirst.value) {
       return [...shownGroups, ...shownBlobs];
     } else {
       return [...shownBlobs, ...shownGroups];
     }
-  }
-
-  List<BlobNode> get shownBlobs => shownNodes.whereType<BlobNode>().toList();
-
-  Transfer uploadFiles(List<String?> files) => Transfer(
-    'Uploading ${files.length} files',
-    future: () async {
-      await storage.uploadPaths(this, files);
-      await remotelyRefresh();
-    }.call(),
-  );
-
-  Transfer addSubBlobNodesTo(List<BlobNode> collected) => Transfer(
-    'Collecting all subnodes in $name',
-    future: () async {
-      await remotelyRefresh();
-      collected.addAll(blobs);
-      List<Future> futures = [];
-      for (final group in groups) {
-        futures.add(group.addSubBlobNodesTo(collected).call());
-      }
-      await Future.wait(futures);
-    }.call(),
-  );
-
-  Transfer removeNodes(List<BlobNode> collected) => Transfer(
-    'Removing nodes in $name',
-    future: storage.removeBlobNodes(collected),
-  );
-
-  void addCachedNodesTo(List<SubNode> collected) {
-    cache.refreshGroupSync(this);
-    for (final node in shownNodes) {
-      collected.add(node);
-      if (node is GroupNode) node.addCachedNodesTo(collected);
-    }
-  }
-
-  @override
-  void open() {
-    casuallyRefresh();
-    goToPage(GroupNodePage(groupNode: this));
   }
 }

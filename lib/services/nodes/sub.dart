@@ -4,7 +4,7 @@ import 'loadable.dart';
 import '../../template/class/tile.dart';
 import '../../template/functions.dart';
 import '../../layers/nodes/cache.dart';
-import '../transfers/transfer.dart';
+import '../transfer.dart';
 import '../../functions.dart';
 import '../../data.dart';
 

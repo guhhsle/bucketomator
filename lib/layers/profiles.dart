@@ -7,9 +7,9 @@ import '../services/profile.dart';
 class ProfilesLayer extends Layer {
   @override
   void construct() {
-    listenTo(Profile.cache);
+    listenTo(Profile.all);
     action = Tile('Profiles', Icons.person_rounded);
-    list = Profile.cache.value.map((p) => p.toTile);
+    list = Profile.all.value.map((p) => p.toTile);
     trailing = [
       IconButton(icon: Icon(Icons.add_rounded), onPressed: () => Profile.empty),
     ];
@@ -25,7 +25,7 @@ class ProfileLayer extends Layer {
 
   @override
   void construct() {
-    listenTo(Profile.cache);
+    listenTo(Profile.all);
     action = Tile(profile.name, Icons.edit_rounded, '', () async {
       profile.name = await getInput(profile.name, 'Name');
       profile.backupCache();
@@ -44,7 +44,9 @@ class ProfileLayer extends Layer {
         profile.backupCache();
       }),
       Tile('Access Key', Icons.key_rounded, accessKey, () async {
-        profile.accessKey = await getInput(profile.accessKey, 'Access Key');
+        final result = await getInput(profile.accessKey, 'Access Key');
+        await profile.subStorage.cache.delete();
+        profile.accessKey = result;
         profile.backupCache();
       }),
       Tile('Secret Key', Icons.password_rounded, secretKey, () async {

@@ -3,6 +3,7 @@ import 'package:minio/models.dart';
 import 'dart:io';
 import 'provider.dart';
 import '../../template/functions.dart';
+import '../nodes/subgroup.dart';
 import '../../functions.dart';
 import '../nodes/prefix.dart';
 import '../nodes/bucket.dart';
@@ -21,22 +22,33 @@ class Cache extends StorageProvider {
   }
 
   String get cachePath {
-    if (Pref.cachePath.isInitial) throw Exception();
+    if (Pref.cachePath.isInitial) throw Exception('No cache');
+    if (accessKey.isEmpty) throw Exception('No key');
     return '${Pref.cachePath.value}/S3/$accessKey';
   }
 
   Cache({required super.storage});
 
-  Directory dirFromGroup(GroupNode node) => Directory(nodePath(node));
+  Directory dirFromGroup(GroupNode node) {
+    if (node is SubGroupNode) return Directory(nodePath(node));
+    return cacheDir;
+  }
+
   File fileFromNode(BlobNode node) => File(nodePath(node));
   String nodePath(SubNode node) => '$cachePath/${node.fullPath}';
+
+  FileSystemEntity entityFromNode(SubNode node) {
+    if (node is SubGroupNode) return dirFromGroup(node);
+    if (node is BlobNode) return fileFromNode(node);
+    throw Exception('Invalid cachable node');
+  }
 
   @override
   Future<void> refreshRoot(RootNode r) async => refreshRootSync(r);
 
   void refreshRootSync(RootNode root) {
     try {
-      root.buckets = cacheDir.listSync().map((entity) {
+      root.subnodes = cacheDir.listSync().map((entity) {
         return BucketNode(
           literalBucket: Bucket(null, nameFromPath(entity.path)),
           parent: storage.root,
@@ -49,7 +61,7 @@ class Cache extends StorageProvider {
   }
 
   @override
-  Future<void> refreshGroup(GroupNode g) async => refreshGroupSync(g);
+  Future<void> refreshSubGroup(SubGroupNode g) async => refreshSubGroupSync(g);
 
   void tryClear() => showSnack(
     'Press to confirm',
@@ -60,7 +72,7 @@ class Cache extends StorageProvider {
     },
   );
 
-  void refreshGroupSync(GroupNode group) {
+  void refreshSubGroupSync(SubGroupNode group) {
     try {
       final nodes = <SubNode>[];
       final bucketName = group.bucket.name;
@@ -160,5 +172,32 @@ class Cache extends StorageProvider {
     await file.create(recursive: true);
     await file.writeAsBytes(node.data);
     return file;
+  }
+
+  Future<void> uncacheDeprecatedSubNodes(GroupNode node) async {
+    try {
+      final newEntities = node.subnodes.map((subnode) {
+        return entityFromNode(subnode).path;
+      });
+      final oldEntries = dirFromGroup(node).listSync().toList();
+      for (final oldEntity in oldEntries) {
+        String oldPath = oldEntity.path;
+        if (oldEntity is Directory) oldPath += '/';
+        if (!newEntities.contains(oldPath)) {
+          debugPrint('Should remove $oldPath');
+          await oldEntity.delete(recursive: true);
+        }
+      }
+    } catch (e) {
+      debugPrint('$e');
+    }
+  }
+
+  Future<void> delete() async {
+    try {
+      await cacheDir.delete(recursive: true);
+    } catch (e) {
+      debugPrint('$e');
+    }
   }
 }

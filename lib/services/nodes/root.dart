@@ -1,19 +1,13 @@
 import 'loadable.dart';
 import 'bucket.dart';
+import 'group.dart';
 import 'sub.dart';
-import '../transfers/transfer.dart';
+import '../transfer.dart';
 import '../storage/substorage.dart';
 
-class RootNode extends LoadableNode {
+class RootNode extends LoadableNode with GroupNode {
   SubStorage subStorage;
-  List<BucketNode> _buckets = [];
   List<SubNode> cachedNodes = [];
-
-  List<BucketNode> get buckets => _buckets;
-  set buckets(List<BucketNode> list) {
-    _buckets = list..sort((a, b) => a.name.compareTo(b.name));
-    notifyListeners();
-  }
 
   RootNode({required this.subStorage});
 
@@ -29,7 +23,8 @@ class RootNode extends LoadableNode {
     storage.cache.refreshRootSync(this);
 
     cachedNodes = [];
-    for (final node in buckets) {
+    for (final node in subnodes) {
+      node as BucketNode;
       cachedNodes.add(node);
       node.addCachedNodesTo(cachedNodes);
     }

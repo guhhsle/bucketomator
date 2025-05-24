@@ -11,7 +11,7 @@ class Profile with ChangeNotifier {
   String accessKey, secretKey;
   late SubStorage subStorage;
 
-  static ValueNotifier<Set<Profile>> cache = ValueNotifier({});
+  static ValueNotifier<Set<Profile>> all = ValueNotifier({});
 
   factory Profile({
     required String name,
@@ -25,9 +25,9 @@ class Profile with ChangeNotifier {
       accessKey: accessKey,
       secretKey: secretKey,
     );
-    final original = cache.value.lookup(temp);
+    final original = all.value.lookup(temp);
     if (original != null) return original;
-    cache.value = {...cache.value, temp};
+    all.value = {...all.value, temp};
     return temp;
   }
 
@@ -98,21 +98,22 @@ class Profile with ChangeNotifier {
 
   void backupCache() {
     List<String> strings = [];
-    for (final profile in cache.value) {
+    for (final profile in all.value) {
       strings.add('$profile');
     }
     Pref.profiles.set(strings);
   }
 
   static Profile get current {
-    for (final profile in cache.value) {
+    for (final profile in all.value) {
       if (profile.isSelected) return profile;
     }
     return Profile.empty;
   }
 
-  void delete() {
-    cache.value = {...cache.value..remove(this)};
+  Future<void> delete() async {
+    await subStorage.cache.delete();
+    all.value = {...all.value..remove(this)};
     backupCache();
   }
 }

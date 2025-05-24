@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:minio/models.dart';
+import 'subgroup.dart';
 import 'blob.dart';
-import 'group.dart';
 import '../../template/class/tile.dart';
 import '../../layers/nodes/bucket.dart';
-import '../transfers/transfer.dart';
+import '../transfer.dart';
 
-class BucketNode extends GroupNode {
+class BucketNode extends SubGroupNode {
   final Bucket literalBucket; //Could've just been a String for bucket name
   BucketNode({
     required this.literalBucket,

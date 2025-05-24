@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'bucket.dart';
-import 'group.dart';
 import 'root.dart';
-import '../transfers/transfer.dart';
+import '../transfer.dart';
 import '../storage/substorage.dart';
 import '../storage/network.dart';
 import '../storage/cache.dart';
 import '../../data.dart';
+import 'subgroup.dart';
 
 abstract class LoadableNode with ChangeNotifier {
   LoadableNode? parent;
@@ -47,7 +47,7 @@ abstract class LoadableNode with ChangeNotifier {
   }
 
   int get depth => ancestors.length - 1;
-  GroupNode get group => parent as GroupNode;
+  SubGroupNode get group => parent as SubGroupNode;
   RootNode get root => ancestors.whereType<RootNode>().first;
   BucketNode get bucket => ancestors.whereType<BucketNode>().first;
   Transfer get refreshAncestors => Transfer(

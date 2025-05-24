@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'subgroup.dart';
 import 'blob.dart';
-import 'group.dart';
 import '../../template/class/tile.dart';
 import '../../layers/nodes/prefix.dart';
 import '../../template/functions.dart';
-import '../transfers/transfer.dart';
+import '../transfer.dart';
 
-class PrefixNode extends GroupNode {
+class PrefixNode extends SubGroupNode {
   PrefixNode({required super.parent, required super.path, super.fsEntity});
 
   @override

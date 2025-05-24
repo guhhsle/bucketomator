@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../services/nodes/subgroup.dart';
 import '../../template/widget/frame.dart';
-import '../../services/nodes/group.dart';
 import '../../template/class/prefs.dart';
 import '../../template/functions.dart';
 import '../../widgets/node_list.dart';
@@ -8,34 +8,34 @@ import '../../layers/nodes/add.dart';
 import '../../widgets/loading.dart';
 import '../../layers/menu.dart';
 
-class GroupNodePage extends StatelessWidget {
-  final GroupNode groupNode;
-  const GroupNodePage({super.key, required this.groupNode});
+class SubGroupNodePage extends StatelessWidget {
+  final SubGroupNode node;
+  const SubGroupNodePage({super.key, required this.node});
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: Listenable.merge([groupNode, Preferences()]),
+      listenable: Listenable.merge([node, Preferences()]),
       builder: (context, child) => Frame(
-        title: Text(groupNode.displayName),
+        title: Text(node.displayName),
         actions: [
           LoadingCircle(
-            node: groupNode,
+            node: node,
             color: Theme.of(context).appBarTheme.foregroundColor,
           ),
           IconButton(
             icon: const Icon(Icons.add_rounded),
-            onPressed: () => AddNodeLayer(parent: groupNode).show(),
+            onPressed: () => AddNodeLayer(parent: node).show(),
           ),
           IconButton(
             tooltip: t('Settings'),
             icon: const Icon(Icons.menu_rounded),
-            onPressed: MenuLayer(storage: groupNode.storage).show,
+            onPressed: MenuLayer(storage: node.storage).show,
           ),
         ],
         child: RefreshIndicator(
-          onRefresh: () => groupNode.remotelyRefresh(),
-          child: NodeList(nodes: groupNode.shownNodes),
+          onRefresh: () => node.remotelyRefresh(),
+          child: NodeList(nodes: node.shownNodes),
         ),
       ),
     );

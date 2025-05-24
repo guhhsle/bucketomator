@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'blob.dart';
-import '../../services/nodes/group.dart';
+import '../../services/nodes/subgroup.dart';
 import '../../template/data.dart';
 
 class BlobNodesPage extends StatefulWidget {
-  final GroupNode group;
+  final SubGroupNode group;
   final int initialIndex;
   const BlobNodesPage({
     super.key,
@@ -18,7 +18,7 @@ class BlobNodesPage extends StatefulWidget {
 
 class _BlobNodesPageState extends State<BlobNodesPage> {
   late PageController pageController;
-  late GroupNode group;
+  late SubGroupNode group;
 
   @override
   void initState() {

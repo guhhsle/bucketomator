@@ -2,14 +2,14 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
-import '../../services/nodes/group.dart';
+import '../../services/nodes/subgroup.dart';
 import '../../template/class/layer.dart';
 import '../../services/nodes/blob.dart';
 import '../../template/class/tile.dart';
 import '../../template/functions.dart';
 
 class AddNodeLayer extends Layer {
-  GroupNode parent;
+  SubGroupNode parent;
 
   AddNodeLayer({required this.parent});
   @override

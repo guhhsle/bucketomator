@@ -15,7 +15,7 @@ import '../../widgets/nodes/pdf.dart';
 import '../../pages/nodes/blobs.dart';
 import '../../layers/nodes/blob.dart';
 import '../../sheets/node/blobs.dart';
-import '../transfers/transfer.dart';
+import '../transfer.dart';
 import '../../template/data.dart';
 import '../../functions.dart';
 import '../../data.dart';

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'network.dart';
 import 'cache.dart';
 import '../nodes/loadable.dart';
+import '../nodes/subgroup.dart';
 import '../nodes/bucket.dart';
 import '../nodes/group.dart';
 import '../nodes/root.dart';
@@ -41,6 +42,7 @@ class SubStorage with ChangeNotifier {
     await network.refresh(node);
     node.networkStatus = Status.completed;
     if (node is BlobNode) cache.store(node);
+    if (node is GroupNode) await cache.uncacheDeprecatedSubNodes(node);
   }
 
   Future removeBlobNodes(List<BlobNode> nodes) async {
@@ -53,7 +55,7 @@ class SubStorage with ChangeNotifier {
     cache.store(node);
   }
 
-  Future<void> uploadPaths(GroupNode parent, List<String?> paths) async {
+  Future<void> uploadPaths(SubGroupNode parent, List<String?> paths) async {
     await network.uploadPaths(parent, paths);
     cache.uploadPaths(parent, paths);
   }
