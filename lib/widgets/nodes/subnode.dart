@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../services/nodes/sub.dart';
-import '../../template/functions.dart';
-import '../../data.dart';
 
 class SubNodeWidget extends StatelessWidget {
   final SubNode node;
@@ -10,7 +8,6 @@ class SubNodeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tile = node.toTile;
-    if (Pref.gridCount.value == 1) return tile.toWidget;
     return InkWell(
       onTap: tile.onTap,
       onLongPress: tile.onHold,
@@ -20,7 +17,13 @@ class SubNodeWidget extends StatelessWidget {
           Center(child: Icon(tile.icon, size: 48)),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Text(t(tile.title), style: TextStyle(fontSize: 16)),
+            child: Text(
+              tile.title,
+              style: TextStyle(
+                fontSize: 16,
+                backgroundColor: Theme.of(context).colorScheme.surface,
+              ),
+            ),
           ),
         ],
       ),
