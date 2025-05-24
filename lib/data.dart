@@ -65,6 +65,8 @@ enum Pref<T> {
     NextByLayer(this, suffix: suffix).show();
   }
 
+  bool get isInitial => value == initial;
+
   @override
   toString() => name;
 }
@@ -95,7 +97,7 @@ enum BlobType {
   static BlobType get defaultType => BlobType.text;
 
   bool get isFixedHeight {
-    if (this == BlobType.pdf) return false;
+    if (this == BlobType.text) return false;
     return true;
   }
 }

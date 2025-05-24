@@ -9,8 +9,12 @@ import 'pages/root.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Preferences().init();
-  if (Pref.cachePath.value == '') {
-    Pref.cachePath.set((await getApplicationCacheDirectory()).path);
+  try {
+    if (Pref.cachePath.value == '') {
+      Pref.cachePath.set((await getApplicationCacheDirectory()).path);
+    }
+  } catch (e) {
+    debugPrint('$e');
   }
   Profile.initCache();
   Profile.current.subStorage.root.casuallyRefresh();

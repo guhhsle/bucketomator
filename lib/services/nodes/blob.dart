@@ -106,13 +106,13 @@ class BlobNode extends SubNode {
   bool get isSynced => networkStatus == Status.completed || data.isNotEmpty;
   BlobType get blobType => BlobType.fromExtension(extension);
 
-  Widget get subWidget =>
+  Widget subWidget({required ScrollController scrollController}) =>
       {
         BlobType.image: ImageNodeWidget(blobNode: this),
         BlobType.video: VideoNodeWidget(blobNode: this),
         BlobType.pdf: PDFNodeWidget(blobNode: this),
       }[blobType] ??
-      TextNodeWidget(blobNode: this);
+      TextNodeWidget(blobNode: this, scrollController: scrollController);
 
   Future<void> saveChanges() async {
     if (blobType == BlobType.text) {

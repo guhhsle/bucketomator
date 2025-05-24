@@ -1,10 +1,9 @@
-import 'package:bucketomator/layers/nodes/blob.dart';
 import 'package:flutter/material.dart';
 import '../../template/widget/tile_card.dart';
 import '../../services/nodes/blob.dart';
 import '../../template/class/tile.dart';
+import '../../layers/nodes/blob.dart';
 import '../../widgets/loading.dart';
-import '../../template/data.dart';
 
 class BlobNodeSheet extends StatelessWidget {
   final BlobNode blobNode;
@@ -48,18 +47,9 @@ class BlobNodeSheet extends StatelessWidget {
                     ],
                   ),
                   Expanded(
-                    child: blobNode.blobType.isFixedHeight
-                        ? SingleChildScrollView(
-                            physics: bouncePhysics,
-                            controller: scrollController,
-                            padding: EdgeInsets.only(
-                              bottom: 64,
-                              left: 8,
-                              right: 8,
-                            ),
-                            child: blobNode.subWidget,
-                          )
-                        : blobNode.subWidget,
+                    child: blobNode.subWidget(
+                      scrollController: scrollController,
+                    ),
                   ),
                 ],
               ),

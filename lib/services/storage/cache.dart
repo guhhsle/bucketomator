@@ -15,8 +15,15 @@ import '../../data.dart';
 class Cache extends StorageProvider {
   Directory get cacheDir => Directory(cachePath);
   String get accessKey => storage.profile.accessKey;
-  String get tempPath => '${Pref.cachePath.value}/Temp/$accessKey';
-  String get cachePath => '${Pref.cachePath.value}/S3/$accessKey';
+  String get tempPath {
+    if (Pref.cachePath.isInitial) throw Exception();
+    return '${Pref.cachePath.value}/Temp/$accessKey';
+  }
+
+  String get cachePath {
+    if (Pref.cachePath.isInitial) throw Exception();
+    return '${Pref.cachePath.value}/S3/$accessKey';
+  }
 
   Cache({required super.storage});
 

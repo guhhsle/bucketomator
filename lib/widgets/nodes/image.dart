@@ -8,6 +8,10 @@ class ImageNodeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (blobNode.data.isEmpty) return Container();
-    return InteractiveViewer(child: Image.memory(blobNode.data));
+    return InteractiveViewer(
+      maxScale: 4,
+      minScale: 0.2,
+      child: Image.memory(blobNode.data),
+    );
   }
 }

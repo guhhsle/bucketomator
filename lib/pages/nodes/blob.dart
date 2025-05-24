@@ -3,7 +3,6 @@ import '../../template/widget/frame.dart';
 import '../../services/nodes/blob.dart';
 import '../../layers/nodes/blob.dart';
 import '../../widgets/loading.dart';
-import '../../template/data.dart';
 
 class BlobNodePage extends StatelessWidget {
   final BlobNode blobNode;
@@ -15,11 +14,6 @@ class BlobNodePage extends StatelessWidget {
     return ListenableBuilder(
       listenable: blobNode,
       builder: (context, child) => Frame(
-        leading: IconButton(
-          icon: Icon(Icons.menu_rounded),
-          tooltip: 'Menu',
-          onPressed: () => BlobNodeLayer(node: blobNode).show(),
-        ),
         title: Text(blobNode.name),
         actions: [
           LoadingCircle(
@@ -35,19 +29,13 @@ class BlobNodePage extends StatelessWidget {
               Navigator.of(c).pop();
             },
           ),
+          IconButton(
+            icon: Icon(Icons.menu_rounded),
+            tooltip: 'Menu',
+            onPressed: () => BlobNodeLayer(node: blobNode).show(),
+          ),
         ],
-        child: blobNode.blobType.isFixedHeight
-            ? SingleChildScrollView(
-                physics: bouncePhysics,
-                padding: EdgeInsets.only(
-                  bottom: 64,
-                  left: 8,
-                  right: 8,
-                  top: 16,
-                ),
-                child: blobNode.subWidget,
-              )
-            : blobNode.subWidget,
+        child: blobNode.subWidget(scrollController: ScrollController()),
       ),
     );
   }

@@ -39,7 +39,7 @@ class _BlobNodesSheetState extends State<BlobNodesSheet> {
         child: Container(
           color: Colors.transparent,
           child: DraggableScrollableSheet(
-            initialChildSize: 0.6,
+            initialChildSize: 0.8,
             minChildSize: 0.2,
             builder: (c, controller) => Card(
               elevation: 6,

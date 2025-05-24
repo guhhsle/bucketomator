@@ -33,7 +33,7 @@ class Transfer<T> extends ChangeNotifier {
       futureStatus = Status.failed;
       errorMessage = '$e';
       showSnack('$e', false);
-      throw Error();
+      rethrow;
     }
     futureStatus = Status.completed;
     notify();
