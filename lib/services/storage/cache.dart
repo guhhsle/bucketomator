@@ -193,7 +193,16 @@ class Cache extends StorageProvider {
     }
   }
 
+  Future<void> deleteTemp() async {
+    try {
+      await Directory(tempPath).delete(recursive: true);
+    } catch (e) {
+      debugPrint('$e');
+    }
+  }
+
   Future<void> delete() async {
+    await deleteTemp();
     try {
       await cacheDir.delete(recursive: true);
     } catch (e) {

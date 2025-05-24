@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
 import 'loadable.dart';
 import '../../template/class/tile.dart';
@@ -40,7 +39,6 @@ abstract class SubNode extends LoadableNode {
   );
 
   Tile get toTile;
-  Widget get toWidget => toTile.toWidget;
 
   Tile get toCacheTile {
     final tile = toTile;

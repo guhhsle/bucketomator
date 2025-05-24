@@ -7,6 +7,10 @@ class InterfaceLayer extends Layer {
   void construct() {
     action = Tile.fromPref(Pref.appbar);
     list = [
+      Tile.fromPref(
+        Pref.gridCount,
+        onPrefInput: (s) => Pref.gridCount.set(int.parse(s).clamp(1, 100)),
+      ),
       Tile.fromPref(Pref.autoCapitalise),
       Tile.fromPref(Pref.autoRefresh),
       Tile.fromPref(Pref.sheetBlobs),

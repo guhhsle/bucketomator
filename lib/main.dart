@@ -18,5 +18,6 @@ Future<void> main() async {
   }
   Profile.initCache();
   Profile.current.subStorage.root.casuallyRefresh();
+  Profile.current.subStorage.cache.deleteTemp();
   runApp(const App(title: 'Bucketomator', child: RootPage()));
 }

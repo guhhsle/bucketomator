@@ -34,6 +34,7 @@ enum Pref<T> {
   //INTERFACE
   autoCapitalise('Auto Capitalise', false, Icons.text_fields_rounded, ui: true),
   sheetBlobs('Sheet blobs', false, Icons.border_bottom_rounded),
+  gridCount('Grid count', 1, Icons.grid_3x3_rounded, ui: true),
   //CACHE
   cachePath(null, '', null),
   autoRefresh('Auto refresh', true, Icons.refresh_rounded, ui: true);

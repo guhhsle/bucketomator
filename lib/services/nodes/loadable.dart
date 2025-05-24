@@ -46,7 +46,7 @@ abstract class LoadableNode with ChangeNotifier {
     return list;
   }
 
-  int get depth => ancestors.length - 1;
+  int get depth => ancestors.length - 2;
   SubGroupNode get group => parent as SubGroupNode;
   RootNode get root => ancestors.whereType<RootNode>().first;
   BucketNode get bucket => ancestors.whereType<BucketNode>().first;

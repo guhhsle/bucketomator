@@ -21,7 +21,7 @@ class BucketNode extends SubGroupNode {
   @override
   Tile get toTile => Tile.complex(
     displayName,
-    Icons.folder_copy_rounded,
+    Icons.inbox_rounded,
     '',
     open,
     onHold: () => BucketNodeLayer(node: this).show(),
