@@ -4,38 +4,45 @@ import '../../services/nodes/blob.dart';
 import '../../layers/nodes/blob.dart';
 import '../../widgets/loading.dart';
 
-class BlobNodePage extends StatelessWidget {
+class BlobNodePage extends StatefulWidget {
   final BlobNode blobNode;
 
   const BlobNodePage({super.key, required this.blobNode});
 
   @override
+  State<BlobNodePage> createState() => _BlobNodePageState();
+}
+
+class _BlobNodePageState extends State<BlobNodePage> {
+  @override
+  void initState() {
+    widget.blobNode.casuallyRefresh();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext c) {
     return ListenableBuilder(
-      listenable: blobNode,
+      listenable: widget.blobNode,
       builder: (context, child) => Frame(
-        title: Text(blobNode.name),
+        title: Text(widget.blobNode.name),
         actions: [
           LoadingCircle(
-            node: blobNode,
+            node: widget.blobNode,
             color: Theme.of(context).appBarTheme.foregroundColor,
           ),
           IconButton(
             icon: Icon(Icons.save_rounded),
             tooltip: 'Save and exit',
-            onPressed: () async {
-              await blobNode.saveChanges();
-              // ignore: use_build_context_synchronously
-              Navigator.of(c).pop();
-            },
+            onPressed: widget.blobNode.saveChanges,
           ),
           IconButton(
             icon: Icon(Icons.menu_rounded),
             tooltip: 'Menu',
-            onPressed: () => BlobNodeLayer(node: blobNode).show(),
+            onPressed: () => BlobNodeLayer(node: widget.blobNode).show(),
           ),
         ],
-        child: blobNode.subWidget(scrollController: ScrollController()),
+        child: widget.blobNode.subWidget(scrollController: ScrollController()),
       ),
     );
   }

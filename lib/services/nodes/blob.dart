@@ -147,8 +147,14 @@ class BlobNode extends SubNode {
   );
 
   @override
-  Transfer get forceRemove =>
-      Transfer('Removing $name', future: storage.removeBlobNode(this));
+  Transfer get forceRemove {
+    final transfer = Transfer('Removing $name');
+    transfer.future = () async {
+      await storage.removeBlobNode(this);
+      await parent?.remotelyRefresh();
+    }.call();
+    return transfer;
+  }
 
   Transfer get downloadRefreshed => Transfer(
     'Downloading $name',
@@ -158,12 +164,9 @@ class BlobNode extends SubNode {
     }.call(),
   );
 
-  Transfer get downloadAsIs => Transfer(
-    'Downloading $name as is',
-    future: () async {
-      await FilePicker.platform.saveFile(fileName: name, bytes: data);
-    }.call(),
-  );
+  Future<void> saveAsIs() async {
+    await FilePicker.platform.saveFile(fileName: name, bytes: data);
+  }
 
   Future<File> storeTemporarily() => cache.tempFileFromBlobNode(this);
 }

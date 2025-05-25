@@ -54,12 +54,9 @@ class Network extends StorageProvider {
       minio.copyObject(node.bucket.name, dest, node.fullPath);
 
   @override
-  Future<void> removeBlobNodes(List<BlobNode> nodes) async {
+  Future<void> removeBlobNodes(List<BlobNode> nodes) {
     final paths = nodes.map((node) => node.path).toList();
-    await minio.removeObjects(nodes.first.bucket.name, paths);
-    for (final node in nodes) {
-      node.parent?.refreshAncestors;
-    }
+    return minio.removeObjects(nodes.first.bucket.name, paths);
   }
 
   @override

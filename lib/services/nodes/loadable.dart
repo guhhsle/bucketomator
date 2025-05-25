@@ -50,8 +50,4 @@ abstract class LoadableNode with ChangeNotifier {
   SubGroupNode get group => parent as SubGroupNode;
   RootNode get root => ancestors.whereType<RootNode>().first;
   BucketNode get bucket => ancestors.whereType<BucketNode>().first;
-  Transfer get refreshAncestors => Transfer(
-    'Refreshing',
-    future: Future.wait(ancestors.map((a) => a.remotelyRefresh())),
-  );
 }

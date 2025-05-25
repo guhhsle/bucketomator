@@ -5,7 +5,7 @@ import '../../template/class/tile.dart';
 import '../../layers/nodes/blob.dart';
 import '../../widgets/loading.dart';
 
-class BlobNodeSheet extends StatelessWidget {
+class BlobNodeSheet extends StatefulWidget {
   final BlobNode blobNode;
   final ScrollController scrollController;
 
@@ -16,11 +16,22 @@ class BlobNodeSheet extends StatelessWidget {
   });
 
   @override
+  State<BlobNodeSheet> createState() => _BlobNodeSheetState();
+}
+
+class _BlobNodeSheetState extends State<BlobNodeSheet> {
+  @override
+  void initState() {
+    widget.blobNode.casuallyRefresh();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext c) {
     double bottom = MediaQuery.of(c).viewInsets.vertical;
     if (bottom > 16) bottom -= 16;
     return ListenableBuilder(
-      listenable: blobNode,
+      listenable: widget.blobNode,
       builder: (context, cal) => Container(
         padding: const EdgeInsets.all(8),
         child: Column(
@@ -32,23 +43,29 @@ class BlobNodeSheet extends StatelessWidget {
                     children: [
                       Expanded(
                         child: TileCard(
-                          Tile(blobNode.name, Icons.save_rounded, '', () async {
-                            await blobNode.saveChanges();
-                            // ignore: use_build_context_synchronously
-                            Navigator.of(c).pop();
-                          }),
+                          Tile(
+                            widget.blobNode.name,
+                            Icons.save_rounded,
+                            '',
+                            () async {
+                              await widget.blobNode.saveChanges();
+                              // ignore: use_build_context_synchronously
+                              Navigator.of(c).pop();
+                            },
+                          ),
                         ),
                       ),
-                      LoadingCircle(node: blobNode),
+                      LoadingCircle(node: widget.blobNode),
                       IconButton(
                         icon: Icon(Icons.menu_rounded),
-                        onPressed: () => BlobNodeLayer(node: blobNode).show(),
+                        onPressed: () =>
+                            BlobNodeLayer(node: widget.blobNode).show(),
                       ),
                     ],
                   ),
                   Expanded(
-                    child: blobNode.subWidget(
-                      scrollController: scrollController,
+                    child: widget.blobNode.subWidget(
+                      scrollController: widget.scrollController,
                     ),
                   ),
                 ],

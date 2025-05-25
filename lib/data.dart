@@ -3,6 +3,7 @@ import 'template/class/prefs.dart';
 import 'template/class/tile.dart';
 import 'layers/interface.dart';
 import 'template/theme.dart';
+import 'functions.dart';
 
 const locales = [
   ...['Serbian', 'English', 'Spanish', 'German', 'French', 'Italian'],
@@ -80,7 +81,15 @@ List<Tile> get settings {
   ];
 }
 
-enum Status { pending, inProgress, completed, failed }
+enum Status {
+  pending,
+  inProgress,
+  completed,
+  failed;
+
+  @override
+  String toString() => capitalize(name);
+}
 
 enum BlobType {
   image,

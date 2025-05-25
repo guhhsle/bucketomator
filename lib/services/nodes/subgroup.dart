@@ -18,18 +18,20 @@ abstract class SubGroupNode extends SubNode with GroupNode {
     }.call(),
   );
 
-  Transfer addSubBlobNodesTo(List<BlobNode> collected) => Transfer(
-    'Collecting all subnodes in $name',
-    future: () async {
+  Transfer addSubBlobNodesTo(List<BlobNode> collected) {
+    final transfer = Transfer('Collecting all subnodes in $name');
+    transfer.future = () async {
       await remotelyRefresh();
       collected.addAll(blobs);
       List<Future> futures = [];
       for (final group in groups) {
-        futures.add(group.addSubBlobNodesTo(collected).call());
+        final subTransfer = group.addSubBlobNodesTo(collected);
+        futures.add(subTransfer.copyWith(parent: transfer).call());
       }
       await Future.wait(futures);
-    }.call(),
-  );
+    }.call();
+    return transfer;
+  }
 
   Transfer removeNodes(List<BlobNode> collected) => Transfer(
     'Removing nodes in $name',

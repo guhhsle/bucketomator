@@ -1,4 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import '../../template/class/layer.dart';
 import '../../services/nodes/blob.dart';
@@ -16,24 +15,29 @@ class BlobNodeLayer extends Layer {
 
     list = [
       Tile('Move', Icons.drive_file_move, '', () async {
-        final dest = await getInput(node.path, 'Destination');
-        await node.moveTo(dest).call();
         Navigator.of(context).pop();
+        final dest = await getInput(node.path, 'Move destination');
+        await node.moveTo(dest).call();
       }),
       Tile('Copy', Icons.content_copy_rounded, '', () async {
-        final dest = await getInput(node.path, 'Destination');
-        await node.copyTo(dest).call();
         Navigator.of(context).pop();
+        final dest = await getInput(node.path, 'Copy destination');
+        await node.copyTo(dest).call();
       }),
       Tile('Sync & download', Icons.file_download_rounded, '', () {
+        Navigator.of(context).pop();
         node.downloadRefreshed.call();
       }),
-      Tile('Download as is', Icons.file_download_rounded, '', () {
-        node.downloadAsIs.call();
+      Tile('Save as is', Icons.file_download_rounded, '', () {
+        Navigator.of(context).pop();
+        node.saveAsIs();
       }),
       Tile('${node.date?.toLocal()}', Icons.event_rounded),
       Tile('Size', Icons.memory_rounded, formatBytes(node.size)),
-      Tile('Delete', Icons.delete_forever_rounded, '', node.tryRemove),
+      Tile('Delete', Icons.delete_forever_rounded, '', () {
+        Navigator.of(context).pop();
+        node.tryRemove();
+      }),
     ];
   }
 }

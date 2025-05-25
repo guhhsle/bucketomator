@@ -19,7 +19,10 @@ class TransferLayer extends Layer {
     if (root == null) {
       action = Tile('Transfers', Icons.swap_horiz_rounded);
     } else {
-      action = Tile(root!.errorMessage ?? root!.status, root!.icon);
+      action = Tile(
+        root!.errorMessage ?? '${root!.status} ${root!.title}',
+        root!.icon,
+      );
     }
     list = subTransfers.map((t) => t.toTile).toList().reversed;
   }

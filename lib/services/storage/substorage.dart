@@ -42,7 +42,7 @@ class SubStorage with ChangeNotifier {
     await network.refresh(node);
     node.networkStatus = Status.completed;
     if (node is BlobNode) cache.store(node);
-    if (node is GroupNode) await cache.uncacheDeprecatedSubNodes(node);
+    if (node is GroupNode) cache.uncacheDeprecatedSubNodes(node);
   }
 
   Future removeBlobNodes(List<BlobNode> nodes) async {

@@ -22,10 +22,7 @@ class PrefixNode extends SubGroupNode {
   void tryRemove() => showSnack(
     'Press to remove $name',
     false,
-    onTap: () async {
-      await forceRemove();
-      showSnack('Removed $name', false);
-    },
+    onTap: () => forceRemove.call(),
   );
 
   @override
@@ -36,7 +33,7 @@ class PrefixNode extends SubGroupNode {
     transfer.future = () async {
       await addSubBlobNodesTo(collected).copyWith(parent: transfer).call();
       await removeNodes(collected).copyWith(parent: transfer).call();
-      await refreshAncestors.copyWith(parent: transfer).call();
+      await parent?.remotelyRefresh();
     }.call();
     return transfer;
   }
@@ -59,7 +56,7 @@ class PrefixNode extends SubGroupNode {
         transfers.add(blobNode.copyTo(newBlobDest).copyWith(parent: transfer));
       }
       await Future.wait(transfers.map((t) => t.call()));
-      await refreshAncestors.copyWith(parent: transfer).call();
+      await parent?.remotelyRefresh();
     }.call();
 
     return transfer;

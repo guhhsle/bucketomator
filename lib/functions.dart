@@ -38,8 +38,6 @@ String formatBytes(int? bytes, {int decimals = 1}) {
 
 String capitalize(String text) {
   if (text.isEmpty) return '';
-
   if (text.length == 1) return text.toUpperCase();
-
   return text[0].toUpperCase() + text.substring(1);
 }
