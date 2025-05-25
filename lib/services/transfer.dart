@@ -24,7 +24,7 @@ class Transfer<T> extends ChangeNotifier {
   }
 
   Future<T?> call() async {
-    if (parent == null) TransferLayer(root: this).show();
+    if (parent == null) TransferLayer().show();
     T? result;
     try {
       status = Status.inProgress;

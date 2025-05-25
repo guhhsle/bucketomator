@@ -14,6 +14,7 @@ const nodeSorts = [
   ...['Name Asc', 'Name Desc', 'Date Asc'],
   ...['Date Desc', 'Size Asc', 'Size Desc'],
 ];
+const refreshTypes = ['Manual', 'Always', 'Only when empty'];
 
 enum Pref<T> {
   //TEMPLATE
@@ -38,7 +39,13 @@ enum Pref<T> {
   gridCount('Grid count', 1, Icons.grid_3x3_rounded, ui: true),
   //CACHE
   cachePath(null, '', null),
-  autoRefresh('Auto refresh', true, Icons.refresh_rounded, ui: true);
+  autoRefresh(
+    'Auto refresh',
+    'Always',
+    Icons.refresh_rounded,
+    ui: true,
+    all: refreshTypes,
+  );
 
   final T initial;
   final List<T>? all;

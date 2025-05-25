@@ -13,6 +13,9 @@ mixin GroupNode on LoadableNode {
     notifyListeners();
   }
 
+  @override
+  bool get isEmpty => subnodes.isEmpty;
+
   List<SubGroupNode> get groups => subnodes.whereType<SubGroupNode>().toList();
   List<BlobNode> get blobs => subnodes.whereType<BlobNode>().toList();
 

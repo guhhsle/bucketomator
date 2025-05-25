@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'bucket.dart';
 import 'root.dart';
-import '../transfer.dart';
 import '../storage/substorage.dart';
 import '../storage/network.dart';
 import '../storage/cache.dart';
@@ -18,6 +17,7 @@ abstract class LoadableNode with ChangeNotifier {
 
   LoadableNode({this.parent});
 
+  bool get isEmpty;
   Status get networkStatus => _networkStatus;
   Status get cacheStatus => _cacheStatus;
 

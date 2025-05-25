@@ -41,6 +41,9 @@ class BlobNode extends SubNode {
     }
   }
 
+  @override
+  bool get isEmpty => data.isEmpty;
+
   Uint8List get data => _data;
   set data(Uint8List u) {
     _data = u;
