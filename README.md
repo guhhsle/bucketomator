@@ -1,6 +1,4 @@
 # Bucketomator
-
-# About
 A cross-platform interface for S3-storage management.
 
 # Features
