@@ -12,7 +12,7 @@ class InterfaceLayer extends Layer {
         onPrefInput: (s) => Pref.gridCount.set(int.parse(s).clamp(1, 100)),
       ),
       Tile.fromPref(Pref.autoCapitalise),
-      Tile.fromPref(Pref.autoRefresh),
+      Tile.fromPref(Pref.refresh),
       Tile.fromPref(Pref.sheetBlobs),
     ];
   }

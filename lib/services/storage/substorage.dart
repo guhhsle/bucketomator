@@ -34,9 +34,9 @@ class SubStorage with ChangeNotifier {
       await cache.refresh(node);
       node.cacheStatus = Status.completed;
     }
-    if (Pref.autoRefresh.value == 'Always') {
+    if (Pref.refresh.value == 'Always') {
       await remotelyRefresh(node);
-    } else if (Pref.autoRefresh.value == 'Only when empty') {
+    } else if (Pref.refresh.value == 'Only when empty') {
       if (node.isEmpty) await remotelyRefresh(node);
     }
   }

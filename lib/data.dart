@@ -39,7 +39,7 @@ enum Pref<T> {
   gridCount('Grid count', 1, Icons.grid_3x3_rounded, ui: true),
   //CACHE
   cachePath(null, '', null),
-  autoRefresh(
+  refresh(
     'Auto refresh',
     'Always',
     Icons.refresh_rounded,
