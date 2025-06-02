@@ -1,6 +1,9 @@
 # Bucketomator
 A minimalist cross-platform interface for S3-storage management.
 
+# Tested on
+StorJ, Cloudflare R2
+
 # Features
 Image, PDF viewer and plain text editor
 Caching
